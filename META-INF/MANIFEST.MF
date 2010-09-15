@@ -16,5 +16,11 @@ Import-Package: javax.swing,
  javax.swing.text.rtf,
  javax.swing.tree,
  org.apache.log4j,
- org.semanticweb.owlapi.apibinding;version="3.1.0",
+ org.protege.owl.diff.analyzer,
+ org.protege.owl.diff.analyzer.algorithms,
+ org.protege.owl.diff.analyzer.util,
+ org.protege.owl.diff.raw,
+ org.protege.owl.diff.raw.algorithms,
+ org.protege.owl.diff.raw.util
+ org.semanticweb.owlapi.apibinding,
  org.semanticweb.owlapi.model

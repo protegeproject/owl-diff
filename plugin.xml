@@ -3,6 +3,7 @@
 
 <plugin>
    <extension-point id="refactor_algorithm" name="Refactor Algorithm" schema="schema/refactor_algorithm.exsd"/>
+   <extension-point id="analysis_algorithm" name="analysis_algorithm" schema="schema/analysis_algorithm.exsd"/>
 
     <extension id="ChooseOntologyToCompare"
                point="org.protege.editor.core.application.ViewComponent">
@@ -17,7 +18,7 @@
     <extension id="ListDifferencesView"
                point="org.protege.editor.core.application.ViewComponent">
         <label value="Select Ontology for Comparison"/>
-        <class value="org.protege.editor.owl.diff.ChooseOntologyView"/>
+        <class value="org.protege.editor.owl.diff.DifferenceList"/>
         <headerColor value="@org.protege.classcolor"/>
         <category value="@org.protege.classcategory"/>
         <navigates value="@org.protege.classcategory"/>

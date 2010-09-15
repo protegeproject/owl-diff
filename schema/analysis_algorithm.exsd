@@ -3,7 +3,7 @@
 <schema targetNamespace="org.protege.editor.owl.diff" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.protege.editor.owl.diff" id="refactor_algorithm" name="Refactor Algorithm"/>
+         <meta.schema plugin="org.protege.editor.owl.diff" id="analysis_algorithm" name="analysis_algorithm"/>
       </appInfo>
       <documentation>
          [Enter description of this extension point.]
@@ -55,7 +55,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.protege.owl.diff.raw.DiffAlgorithm"/>
+                  <meta.attribute kind="java" basedOn=":org.protege.owl.diff.analyzer.AnalyzerAlgorithm"/>
                </appInfo>
             </annotation>
          </attribute>
