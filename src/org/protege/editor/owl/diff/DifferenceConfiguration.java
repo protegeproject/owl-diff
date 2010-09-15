@@ -1,10 +1,14 @@
 package org.protege.editor.owl.diff;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.protege.editor.owl.model.OWLModelManager;
+import org.protege.owl.diff.analyzer.AnalyzerAlgorithm;
 import org.protege.owl.diff.analyzer.ChangeAnalyzer;
+import org.protege.owl.diff.raw.DiffAlgorithm;
 import org.protege.owl.diff.raw.Engine;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -32,6 +36,18 @@ public class DifferenceConfiguration {
 
 	public void run(IRI ontologyIRI) {
 		
+	}
+	
+	/* TODO - set  with preferences and presets */
+	public List<DiffAlgorithm> getDiffAlgorithms() {
+		List<DiffAlgorithm> ret = new ArrayList<DiffAlgorithm>();
+		return ret;
+	}
+
+	/* TODO - set  with preferences and presets */
+	public List<AnalyzerAlgorithm> getAnalyzerAlgoritms() {
+		List<AnalyzerAlgorithm> ret = new ArrayList<AnalyzerAlgorithm>();
+		return ret;
 	}
 
 	public OWLModelManager getManager() {
