@@ -45,7 +45,7 @@ public class DiffView extends AbstractOWLViewComponent {
 		run.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
-				DifferenceConfiguration dc = DifferenceConfiguration.getInstance(getOWLModelManager());
+				DifferenceConfiguration dc = new DifferenceConfiguration(getOWLModelManager());
 				try {
 					dc.run(IRI.create(getOntologyFile()));
 				}

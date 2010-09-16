@@ -20,7 +20,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
-public class DifferenceConfiguration implements Disposable {
+public class DifferenceConfiguration {
 	public static final String ID = DifferenceConfiguration.class.getCanonicalName();
 	
 	private OWLModelManager manager;
@@ -29,18 +29,8 @@ public class DifferenceConfiguration implements Disposable {
 	private Engine engine;
 	private ChangeAnalyzer analyzer;
 	
-	public static DifferenceConfiguration getInstance(OWLModelManager manager) {
-		DifferenceConfiguration instance = manager.get(ID);
-		if (instance == null) {
-			instance = new DifferenceConfiguration(manager);
-			manager.put(ID, instance);
-		}
-		return instance;
-	}
-	
-	private DifferenceConfiguration(OWLModelManager manager) {
+	public DifferenceConfiguration(OWLModelManager manager) {
 		this.manager = manager;
-		manager.put(ID, this);
 	}
 
 	public void run(IRI ontologyIRI) throws OWLOntologyCreationException {
