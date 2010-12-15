@@ -42,24 +42,24 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>protege4</groupId>
-            <artifactId>org.protege.common</artifactId>
-            <version>4.1.0.213_RELEASE</version>
+          <groupId>protege4</groupId>
+          <artifactId>org.protege.common</artifactId>
+          <version>4.1.0.b213_2010_12_15_1123</version>
         </dependency>
         <dependency>
-            <groupId>protege4</groupId>
-            <artifactId>org.protege.editor.core.application</artifactId>
-            <version>4.1.0.213_RELEASE</version>
+          <groupId>protege4</groupId>
+          <artifactId>org.protege.editor.core.application</artifactId>
+          <version>4.1.0.b213_2010_12_15_1123</version>
         </dependency>
         <dependency>
           <groupId>protege4</groupId>
           <artifactId>org.protege.editor.owl</artifactId>
-          <version>4.1.0.213_RELEASE</version>
+          <version>4.1.0.b213_2010_12_15_1114</version>
         </dependency>
         <dependency>
           <groupId>protege4</groupId>
           <artifactId>org.protege.owl.diff</artifactId>
-          <version>4.1.0.213_SNAPSHOT</version>
+          <version>1.0.0.2010_12_15_1130</version>
         </dependency>
         <dependency>
           <groupId>protege4</groupId>
