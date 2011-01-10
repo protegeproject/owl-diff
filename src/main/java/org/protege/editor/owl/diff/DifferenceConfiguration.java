@@ -4,16 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.protege.editor.core.Disposable;
 import org.protege.editor.owl.model.OWLModelManager;
-import org.protege.owl.diff.analyzer.AnalyzerAlgorithm;
-import org.protege.owl.diff.analyzer.ChangeAnalyzer;
-import org.protege.owl.diff.analyzer.algorithms.IdentifyRetiredConcepts;
-import org.protege.owl.diff.raw.DiffAlgorithm;
-import org.protege.owl.diff.raw.Engine;
-import org.protege.owl.diff.raw.algorithms.MatchByCode;
-import org.protege.owl.diff.raw.algorithms.MatchById;
-import org.protege.owl.diff.raw.algorithms.MatchStandardVocabulary;
+import org.protege.owl.diff.Engine;
+import org.protege.owl.diff.align.AlignmentAlgorithm;
+import org.protege.owl.diff.align.algorithms.MatchByCode;
+import org.protege.owl.diff.align.algorithms.MatchStandardVocabulary;
+import org.protege.owl.diff.present.PresentationAlgorithm;
+import org.protege.owl.diff.present.algorithms.IdentifyRetiredConcepts;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -27,7 +24,6 @@ public class DifferenceConfiguration {
 	private OWLOntology workspaceOntology;
 	private OWLOntology altOntology;
 	private Engine engine;
-	private ChangeAnalyzer analyzer;
 	
 	public DifferenceConfiguration(OWLModelManager manager) {
 		this.manager = manager;
@@ -38,24 +34,22 @@ public class DifferenceConfiguration {
 		OWLOntologyManager altManager = OWLManager.createOWLOntologyManager();
 		altOntology = altManager.loadOntology(ontologyIRI);
 		engine = new Engine(manager.getOWLDataFactory(), workspaceOntology, altOntology, getParameters());
-		engine.setDiffAlgorithms(getDiffAlgorithms().toArray(new DiffAlgorithm[0]));
-		engine.run();
-		analyzer = new ChangeAnalyzer(engine.getOwlDiffMap(), getParameters());
-		analyzer.setAlgorithms(getAnalyzerAlgoritms().toArray(new AnalyzerAlgorithm[0]));
-		analyzer.runAlgorithms();
+		engine.setAlignmentAlgorithms(getDiffAlgorithms().toArray(new AlignmentAlgorithm[0]));
+		engine.phase1();
+		engine.phase2();
 	}
 	
 	/* TODO - set  with preferences and presets */
-	public List<DiffAlgorithm> getDiffAlgorithms() {
-		List<DiffAlgorithm> ret = new ArrayList<DiffAlgorithm>();
+	public List<AlignmentAlgorithm> getDiffAlgorithms() {
+		List<AlignmentAlgorithm> ret = new ArrayList<AlignmentAlgorithm>();
 		ret.add(new MatchByCode());
 		ret.add(new MatchStandardVocabulary());
 		return ret;
 	}
 
 	/* TODO - set  with preferences and presets */
-	public List<AnalyzerAlgorithm> getAnalyzerAlgoritms() {
-		List<AnalyzerAlgorithm> ret = new ArrayList<AnalyzerAlgorithm>();
+	public List<PresentationAlgorithm> getPresentationAlgorithms() {
+		List<PresentationAlgorithm> ret = new ArrayList<PresentationAlgorithm>();
 		ret.add(new IdentifyRetiredConcepts());
 		return ret;
 	}
@@ -82,9 +76,5 @@ public class DifferenceConfiguration {
 
 	public Engine getEngine() {
 		return engine;
-	}
-
-	public ChangeAnalyzer getAnalyzer() {
-		return analyzer;
 	}
 }
