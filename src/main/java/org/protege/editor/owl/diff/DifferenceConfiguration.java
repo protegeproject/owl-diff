@@ -11,6 +11,7 @@ import org.protege.editor.owl.model.OWLModelManager;
 import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.algorithms.MatchByCode;
+import org.protege.owl.diff.align.algorithms.MatchById;
 import org.protege.owl.diff.align.algorithms.MatchStandardVocabulary;
 import org.protege.owl.diff.present.EntityBasedDiff;
 import org.protege.owl.diff.present.PresentationAlgorithm;
@@ -67,6 +68,7 @@ public class DifferenceConfiguration implements Disposable {
 			diffAlgorithms = new ArrayList<AlignmentAlgorithm>();
 			diffAlgorithms.add(new MatchByCode());
 			diffAlgorithms.add(new MatchStandardVocabulary());
+			diffAlgorithms.add(new MatchById());
 		}
 		return diffAlgorithms;
 	}

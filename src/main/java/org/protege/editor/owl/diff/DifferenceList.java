@@ -10,6 +10,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 
 import org.protege.editor.owl.model.OWLModelManager;
 import org.protege.owl.diff.present.Changes;
@@ -52,6 +53,7 @@ public class DifferenceList extends JPanel {
 	private JComponent createDifferenceListComponent() {
 		entityBasedDiffList = new JList(new DefaultListModel());
 		entityBasedDiffList.setCellRenderer(new EntityBasedDiffRenderer());
+		entityBasedDiffList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane pane = new JScrollPane(entityBasedDiffList);
 		return pane;
 	}
