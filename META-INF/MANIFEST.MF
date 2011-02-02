@@ -23,6 +23,8 @@ Import-Package: javax.swing,
  org.protege.owl.diff.present,
  org.protege.owl.diff.present.algorithms,
  org.protege.owl.diff.present.util,
+ org.protege.owl.diff.service,
+ org.protege.owl.diff.util,
  org.semanticweb.owlapi.apibinding,
  org.semanticweb.owlapi.model
 Export-Package: org.protege.editor.owl.diff

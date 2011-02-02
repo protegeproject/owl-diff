@@ -2,11 +2,13 @@ package org.protege.editor.owl.diff;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -15,16 +17,32 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.protege.editor.core.Disposable;
 import org.protege.editor.owl.model.OWLModelManager;
 import org.protege.owl.diff.present.Changes;
 import org.protege.owl.diff.present.EntityBasedDiff;
 
-public class DifferenceList extends JPanel {
+public class DifferenceList extends JPanel implements Disposable {
 	private static final long serialVersionUID = -3297368551819068585L;
 	
 	private DifferenceConfiguration diffs;
+	private DifferenceTableModel diffModel;
 	
 	private JList entityBasedDiffList;
+	
+	private DifferenceListener diffListener = new DifferenceListener() {
+		public void statusChanged(DifferenceEvent event) {
+			if (event == DifferenceEvent.DIFF_COMPLETED) {
+				fillEntityBasedDiffList();
+			}
+			else if (event == DifferenceEvent.SELECTION_CHANGED) {
+				EntityBasedDiff diff = diffs.getSelection();
+				if (diff != null) {
+					diffModel.setMatches(diff.getAxiomMatches());
+				}
+			}
+		}
+	};
 
 	public DifferenceList(OWLModelManager manager) {
 		setLayout(new BorderLayout());
@@ -34,13 +52,7 @@ public class DifferenceList extends JPanel {
 		if (diffs.isReady()) {
 			fillEntityBasedDiffList();
 		}
-		diffs.addDifferenceListener(new DifferenceListener() {
-			public void statusChanged(DifferenceEvent event) {
-				if (event == DifferenceEvent.DIFF_COMPLETED) {
-					fillEntityBasedDiffList();
-				}
-			}
-		});
+		diffs.addDifferenceListener(diffListener);
 	}
 	
 	private void fillEntityBasedDiffList() {
@@ -60,7 +72,7 @@ public class DifferenceList extends JPanel {
 		entityBasedDiffList.setCellRenderer(new EntityBasedDiffRenderer());
 		entityBasedDiffList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		entityBasedDiffList.addListSelectionListener(new ListSelectionListener() {
-			@Override
+
 			public void valueChanged(ListSelectionEvent e) {
 				Object o = entityBasedDiffList.getSelectedValue();
 				if (o instanceof EntityBasedDiff) {
@@ -68,12 +80,17 @@ public class DifferenceList extends JPanel {
 				}
 			}
 		});
+		
+		Dimension textSize = new JLabel("Modified CheeseyPizza -> CheeseyPizza").getPreferredSize();	
 		JScrollPane pane = new JScrollPane(entityBasedDiffList);
+		pane.setPreferredSize(new Dimension((int) textSize.getWidth(), (int) (100 *textSize.getHeight())));	
 		return pane;
 	}
 	
 	private JComponent createDifferenceTable() {
 		JTable table = new JTable();
+		diffModel = new DifferenceTableModel(diffs.getManager());
+		table.setModel(diffModel);
 		return new JScrollPane(table);
 	}
 	
@@ -83,12 +100,17 @@ public class DifferenceList extends JPanel {
 		@Override
 		public Component getListCellRendererComponent(JList list, Object value,
 													  int index, boolean isSelected, boolean cellHasFocus) {
+			JLabel text = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 			if (value instanceof EntityBasedDiff) {
-				setText(((EntityBasedDiff) value).getShortDescription());
+				text.setText(((EntityBasedDiff) value).getShortDescription());
 			}
 			return this;
 		}
 		
+	}
+	
+	public void dispose() throws Exception {
+		diffs.removeDifferenceListener(diffListener);
 	}
 
 }

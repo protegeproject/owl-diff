@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.protege.editor.core.Disposable;
 import org.protege.editor.owl.model.OWLModelManager;
 import org.protege.owl.diff.Engine;
@@ -15,7 +16,11 @@ import org.protege.owl.diff.align.algorithms.MatchById;
 import org.protege.owl.diff.align.algorithms.MatchStandardVocabulary;
 import org.protege.owl.diff.present.EntityBasedDiff;
 import org.protege.owl.diff.present.PresentationAlgorithm;
+import org.protege.owl.diff.present.algorithms.IdentifyMergedConcepts;
 import org.protege.owl.diff.present.algorithms.IdentifyRetiredConcepts;
+import org.protege.owl.diff.service.CodeToEntityMapper;
+import org.protege.owl.diff.service.RetirementClassService;
+import org.protege.owl.diff.util.StopWatch;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -24,6 +29,8 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 public class DifferenceConfiguration implements Disposable {
 	public static final String ID = DifferenceConfiguration.class.getCanonicalName();
+	
+	public static final Logger LOGGER = Logger.getLogger(DifferenceConfiguration.class);
 	
 	private OWLModelManager manager;
 	private OWLOntology workspaceOntology;
@@ -53,12 +60,20 @@ public class DifferenceConfiguration implements Disposable {
 	public void run(IRI ontologyIRI) throws OWLOntologyCreationException {
 		reset();
 		workspaceOntology = manager.getActiveOntology();
+		
+		StopWatch stopWatch = new StopWatch(LOGGER);
+		LOGGER.info("Loading baseline ontology...");
 		OWLOntologyManager altManager = OWLManager.createOWLOntologyManager();
 		altOntology = altManager.loadOntology(ontologyIRI);
+		stopWatch.measure();
+		LOGGER.info("Starting Difference calculation...");
 		engine = new Engine(manager.getOWLDataFactory(), workspaceOntology, altOntology, getParameters());
 		engine.setAlignmentAlgorithms(getDiffAlgorithms().toArray(new AlignmentAlgorithm[0]));
 		engine.phase1();
+		stopWatch.measure();
+		LOGGER.info("Calculating presentation...");
 		engine.phase2();
+		stopWatch.finish();
 		fireStatusChanged(DifferenceEvent.DIFF_COMPLETED);
 	}
 	
@@ -94,8 +109,15 @@ public class DifferenceConfiguration implements Disposable {
 	public Properties getParameters() {
 		if (parameters == null) {
 			parameters = new Properties();
-			parameters.put("diff.by.code", "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#code");
-			parameters.put("retirement.class", "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Retired_Concept");
+	        parameters.put(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#code");
+	        parameters.put(IdentifyMergedConcepts.MERGED_INTO_ANNOTATION_PROPERTY, "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Merge_Into");
+	        parameters.put(RetirementClassService.RETIREMENT_STATUS_PROPERTY, "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Concept_Status");
+	        parameters.put(RetirementClassService.RETIREMENT_STATUS_STRING, "Retired_Concept");
+	        parameters.put(RetirementClassService.RETIREMENT_CLASS_PROPERTY, "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Retired_Concept_");
+	        parameters.put(RetirementClassService.RETIREMENT_META_PROPERTIES + 0, "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_PARENT");
+	        parameters.put(RetirementClassService.RETIREMENT_META_PROPERTIES + 1, "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_ASSOCIATION");
+	        parameters.put(RetirementClassService.RETIREMENT_META_PROPERTIES + 2, "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_CHILD");
+	        parameters.put(RetirementClassService.RETIREMENT_META_PROPERTIES + 3, "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_ROLE");
 		}
 		return parameters;
 	}
