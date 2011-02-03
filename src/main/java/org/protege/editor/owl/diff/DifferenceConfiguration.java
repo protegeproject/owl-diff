@@ -34,7 +34,7 @@ public class DifferenceConfiguration implements Disposable {
 	
 	private OWLModelManager manager;
 	private OWLOntology workspaceOntology;
-	private OWLOntology altOntology;
+	private OWLOntology baselineOntology;
 	private Engine engine;
 	
 	private Set<DifferenceListener> listeners = new HashSet<DifferenceListener>();
@@ -57,21 +57,19 @@ public class DifferenceConfiguration implements Disposable {
 		this.manager = manager;
 	}
 
-	public void run(IRI ontologyIRI) throws OWLOntologyCreationException {
+	public void run(OWLOntology baselineOntology) throws OWLOntologyCreationException {
 		reset();
 		workspaceOntology = manager.getActiveOntology();
+		this.baselineOntology = baselineOntology;
 		
 		StopWatch stopWatch = new StopWatch(LOGGER);
-		LOGGER.info("Loading baseline ontology...");
-		OWLOntologyManager altManager = OWLManager.createOWLOntologyManager();
-		altOntology = altManager.loadOntology(ontologyIRI);
-		stopWatch.measure();
 		LOGGER.info("Starting Difference calculation...");
-		engine = new Engine(manager.getOWLDataFactory(), workspaceOntology, altOntology, getParameters());
+		engine = new Engine(manager.getOWLDataFactory(), baselineOntology, workspaceOntology, getParameters());
 		engine.setAlignmentAlgorithms(getDiffAlgorithms().toArray(new AlignmentAlgorithm[0]));
 		engine.phase1();
 		stopWatch.measure();
 		LOGGER.info("Calculating presentation...");
+		engine.setPresentationAlgorithms(getPresentationAlgorithms().toArray(new PresentationAlgorithm[0]));
 		engine.phase2();
 		stopWatch.finish();
 		fireStatusChanged(DifferenceEvent.DIFF_COMPLETED);
@@ -97,6 +95,7 @@ public class DifferenceConfiguration implements Disposable {
 		if (presentationAlgorithms == null) {
 			presentationAlgorithms = new ArrayList<PresentationAlgorithm>();
 			presentationAlgorithms.add(new IdentifyRetiredConcepts());
+			presentationAlgorithms.add(new IdentifyMergedConcepts());
 		}
 		return presentationAlgorithms;
 	}
@@ -130,8 +129,8 @@ public class DifferenceConfiguration implements Disposable {
 		return workspaceOntology;
 	}
 
-	public OWLOntology getAltOntology() {
-		return altOntology;
+	public OWLOntology getBaselineOntology() {
+		return baselineOntology;
 	}
 
 	public Engine getEngine() {
@@ -167,7 +166,7 @@ public class DifferenceConfiguration implements Disposable {
 	
 	public void reset() {
 		fireStatusChanged(DifferenceEvent.DIFF_RESET);
-		altOntology = null;
+		baselineOntology = null;
 		engine = null;
 	}
 	

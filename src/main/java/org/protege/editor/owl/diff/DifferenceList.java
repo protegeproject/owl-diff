@@ -18,12 +18,16 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.protege.editor.core.Disposable;
-import org.protege.editor.owl.model.OWLModelManager;
+import org.protege.editor.owl.OWLEditorKit;
+import org.protege.editor.owl.ui.renderer.OWLCellRenderer;
 import org.protege.owl.diff.present.Changes;
 import org.protege.owl.diff.present.EntityBasedDiff;
+import org.semanticweb.owlapi.model.OWLAxiom;
 
 public class DifferenceList extends JPanel implements Disposable {
 	private static final long serialVersionUID = -3297368551819068585L;
+	
+	private OWLEditorKit editorKit;
 	
 	private DifferenceConfiguration diffs;
 	private DifferenceTableModel diffModel;
@@ -44,9 +48,10 @@ public class DifferenceList extends JPanel implements Disposable {
 		}
 	};
 
-	public DifferenceList(OWLModelManager manager) {
+	public DifferenceList(OWLEditorKit editorKit) {
 		setLayout(new BorderLayout());
-		this.diffs = DifferenceConfiguration.get(manager);
+		this.editorKit = editorKit;
+		this.diffs = DifferenceConfiguration.get(editorKit.getModelManager());
 		add(createDifferenceListComponent(), BorderLayout.WEST);
 		add(createDifferenceTable(), BorderLayout.CENTER);
 		if (diffs.isReady()) {
@@ -91,6 +96,9 @@ public class DifferenceList extends JPanel implements Disposable {
 		JTable table = new JTable();
 		diffModel = new DifferenceTableModel(diffs.getManager());
 		table.setModel(diffModel);
+		
+		table.setDefaultRenderer(OWLAxiom.class, new OWLCellRenderer(editorKit, false, false));
+		
 		return new JScrollPane(table);
 	}
 	

@@ -53,6 +53,19 @@ public class DifferenceTableModel extends AbstractTableModel {
 	public String getColumnName(int column) {
 		return Column.values()[column].toString();
 	}
+	
+	public Class<?> getColumnClass(int col) {
+		switch (Column.values()[col]) {
+		case DESCRIPTION:
+			return String.class;
+		case SOURCE_AXIOM:
+		case TARGET_AXIOM:
+			return OWLAxiom.class;
+		default:
+			throw new IllegalStateException("Programmer error");
+		}
+	}
+
 
 	public Object getValueAt(int row, int col) {
 		OWLAxiom axiom;
@@ -62,10 +75,12 @@ public class DifferenceTableModel extends AbstractTableModel {
 			return match.getDescription();
 		case SOURCE_AXIOM:
 			axiom = match.getSourceAxiom();
-			return axiom == null ? "" : protegeModelManager.getRendering(axiom);
+			// return axiom == null ? "" : protegeModelManager.getRendering(axiom);
+			return axiom;
 		case TARGET_AXIOM:
 			axiom = match.getTargetAxiom();
-			return axiom == null ? "" : protegeModelManager.getRendering(axiom);
+			// return axiom == null ? "" : protegeModelManager.getRendering(axiom);
+			return axiom;
 		default:
 			throw new IllegalStateException("Programmer error");
 		}

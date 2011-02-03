@@ -9,14 +9,20 @@ import java.io.IOException;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 
+import org.apache.log4j.Logger;
 import org.protege.editor.core.ProtegeApplication;
 import org.protege.editor.owl.ui.UIHelper;
 import org.protege.editor.owl.ui.view.AbstractOWLViewComponent;
+import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 public class DiffView extends AbstractOWLViewComponent {
 	private static final long serialVersionUID = -953820310817783007L;
+	public static Logger LOGGER = Logger.getLogger(DiffView.class);
+	
 	private JTextField ontologyLocationField;
 
 	protected void initialiseOWLView() throws Exception {
@@ -47,7 +53,10 @@ public class DiffView extends AbstractOWLViewComponent {
 			public void actionPerformed(ActionEvent e) {
 				DifferenceConfiguration dc = DifferenceConfiguration.get(getOWLModelManager());
 				try {
-					dc.run(IRI.create(getOntologyFile()));
+					LOGGER.info("Loading baseline ontology...");
+					OWLOntologyManager baselineManager = OWLManager.createOWLOntologyManager();
+					OWLOntology baselineOntology = baselineManager.loadOntology(IRI.create(getOntologyFile()));
+					dc.run(baselineOntology);
 				}
 				catch (OWLOntologyCreationException ooce) {
 					ProtegeApplication.getErrorLog().logError(ooce);
