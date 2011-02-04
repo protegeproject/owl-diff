@@ -1,4 +1,4 @@
-package org.protege.editor.owl.diff;
+package org.protege.editor.owl.diff.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -19,6 +19,9 @@ import javax.swing.event.ListSelectionListener;
 
 import org.protege.editor.core.Disposable;
 import org.protege.editor.owl.OWLEditorKit;
+import org.protege.editor.owl.diff.model.DifferenceConfiguration;
+import org.protege.editor.owl.diff.model.DifferenceEvent;
+import org.protege.editor.owl.diff.model.DifferenceListener;
 import org.protege.editor.owl.ui.renderer.OWLCellRenderer;
 import org.protege.owl.diff.present.Changes;
 import org.protege.owl.diff.present.EntityBasedDiff;
@@ -38,6 +41,10 @@ public class DifferenceList extends JPanel implements Disposable {
 		public void statusChanged(DifferenceEvent event) {
 			if (event == DifferenceEvent.DIFF_COMPLETED) {
 				fillEntityBasedDiffList();
+			}
+			else if (event == DifferenceEvent.DIFF_RESET) {
+				entityBasedDiffList.removeAll();
+				diffModel.clear();
 			}
 			else if (event == DifferenceEvent.SELECTION_CHANGED) {
 				EntityBasedDiff diff = diffs.getSelection();
@@ -117,7 +124,7 @@ public class DifferenceList extends JPanel implements Disposable {
 		
 	}
 	
-	public void dispose() throws Exception {
+	public void dispose() {
 		diffs.removeDifferenceListener(diffListener);
 	}
 

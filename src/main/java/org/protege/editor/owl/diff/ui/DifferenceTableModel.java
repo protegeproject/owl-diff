@@ -1,4 +1,4 @@
-package org.protege.editor.owl.diff;
+package org.protege.editor.owl.diff.ui;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +48,10 @@ public class DifferenceTableModel extends AbstractTableModel {
 
 	public int getRowCount() {
 		return matches == null ? 0 : matches.size();
+	}
+	
+	public void clear() {
+		matches.clear();
 	}
 	
 	public String getColumnName(int column) {

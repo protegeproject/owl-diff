@@ -4,7 +4,6 @@ Bundle-Name: OWL Diff Tool
 Bundle-SymbolicName: org.protege.editor.owl.diff;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Vendor: The Protege Development Team
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.protege.editor.owl;bundle-version="4.1.0",
  org.protege.editor.core.application;bundle-version="4.1.0"
 Import-Package: javax.swing,
@@ -28,4 +27,5 @@ Import-Package: javax.swing,
  org.protege.owl.diff.util,
  org.semanticweb.owlapi.apibinding,
  org.semanticweb.owlapi.model
-Export-Package: org.protege.editor.owl.diff
+Export-Package: org.protege.editor.owl.diff.model,
+ org.protege.editor.owl.diff.ui

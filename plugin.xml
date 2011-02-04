@@ -7,12 +7,26 @@
 
     <extension id="Protege Compare View"
                point="org.protege.editor.core.application.ViewComponent">
-        <label value="Select Ontology for Comparison"/>
-        <class value="org.protege.editor.owl.diff.DiffView"/>
-        <headerColor value="@org.protege.classcolor"/>
-        <category value="@org.protege.classcategory"/>
-        <navigates value="@org.protege.classcategory"/>
+        <label value="Difference List"/>
+        <class value="org.protege.editor.owl.diff.ui.DiffView"/>
     </extension>
+    
+    <extension id="DifferenceTable"
+         	  name="Difference Table"
+              point="org.protege.editor.core.application.WorkspaceTab">
+      <label value="Difference Table"/>
+      <class value="org.protege.editor.owl.ui.OWLWorkspaceViewsTab"/>
+      <index value="Z"/>
+      <editorKitId value="OWLEditorKit"/>
+      <defaultViewConfigFileName value="viewconfig.xml"/>
+   </extension>
 
+   <extension id="CalculateDifferences"
+               point="org.protege.editor.core.application.EditorKitMenuAction">
+        <name value="Compare Ontologies"/>
+        <class value="org.protege.editor.owl.diff.ui.StartDiff"/>
+        <path value="org.protege.editor.owl.menu.tools/SlotM-A"/>
+        <editorKitId value="OWLEditorKit"/>
+    </extension>
 
 </plugin>

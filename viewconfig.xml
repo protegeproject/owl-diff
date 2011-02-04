@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout>
+    <VSNode splits="1.0">
+        <CNode>
+            <Component label="Difference List">
+                <Property id="pluginId" value="org.protege.editor.owl.diff.Protege Compare View"/>
+            </Component>
+        </CNode>
+    </VSNode>
+</layout>

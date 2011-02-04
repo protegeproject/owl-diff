@@ -1,4 +1,4 @@
-package org.protege.editor.owl.diff;
+package org.protege.editor.owl.diff.model;
 
 import java.util.ArrayList;
 import java.util.HashSet;

@@ -1,4 +1,4 @@
-package org.protege.editor.owl.diff;
+package org.protege.editor.owl.diff.model;
 
 import org.protege.owl.diff.present.EntityBasedDiff;
 

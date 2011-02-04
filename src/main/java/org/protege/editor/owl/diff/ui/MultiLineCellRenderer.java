@@ -1,4 +1,4 @@
-package org.protege.editor.owl.diff;
+package org.protege.editor.owl.diff.ui;
 
 /**
  * MultiLineCellRenderer.java
