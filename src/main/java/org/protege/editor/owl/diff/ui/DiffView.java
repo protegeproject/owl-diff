@@ -20,7 +20,6 @@ public class DiffView extends AbstractOWLViewComponent {
 	
 	private DifferenceListener listener = new DifferenceListener() {
 
-		@Override
 		public void statusChanged(DifferenceEvent event) {
 			updateStatus();
 		}
