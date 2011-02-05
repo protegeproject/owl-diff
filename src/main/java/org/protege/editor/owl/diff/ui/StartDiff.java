@@ -6,7 +6,11 @@ import java.io.File;
 import javax.swing.ProgressMonitor;
 
 import org.protege.editor.core.ProtegeApplication;
+import org.protege.editor.core.ui.workspace.WorkspaceTab;
+import org.protege.editor.core.ui.workspace.WorkspaceTabPlugin;
+import org.protege.editor.core.ui.workspace.WorkspaceTabPluginLoader;
 import org.protege.editor.owl.diff.model.DifferenceConfiguration;
+import org.protege.editor.owl.model.OWLWorkspace;
 import org.protege.editor.owl.ui.UIHelper;
 import org.protege.editor.owl.ui.action.ProtegeOWLAction;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -47,6 +51,8 @@ public class StartDiff extends ProtegeOWLAction {
 						DifferenceConfiguration diffs = DifferenceConfiguration.get(getOWLModelManager());
 						diffs.run(ontology);
 						monitor.setProgress(2);
+						
+						selectTab();
 					}
 					catch (Throwable t) {
 						ProtegeApplication.getErrorLog().logError(t);
@@ -58,6 +64,23 @@ public class StartDiff extends ProtegeOWLAction {
 			}).start();
 		}
 
+	}
+	
+	private void selectTab() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+		String tabId = "org.protege.editor.owl.diff.DifferenceTable";
+		OWLWorkspace workspace = getOWLWorkspace();
+		if (!workspace.containsTab(tabId)) {
+			WorkspaceTabPluginLoader loader = new WorkspaceTabPluginLoader(workspace);
+			for (WorkspaceTabPlugin plugin : loader.getPlugins()) {
+				if (plugin.getId().equals(tabId)) {
+					WorkspaceTab tab = plugin.newInstance();
+					workspace.addTab(tab);
+					break;
+				}
+			}
+		}
+		WorkspaceTab tab = workspace.getWorkspaceTab(tabId);
+		workspace.setSelectedTab(tab);
 	}
 
 }
