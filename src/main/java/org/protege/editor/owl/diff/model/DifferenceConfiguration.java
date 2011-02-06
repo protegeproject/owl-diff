@@ -16,16 +16,16 @@ import org.protege.owl.diff.align.algorithms.MatchById;
 import org.protege.owl.diff.align.algorithms.MatchStandardVocabulary;
 import org.protege.owl.diff.present.EntityBasedDiff;
 import org.protege.owl.diff.present.PresentationAlgorithm;
+import org.protege.owl.diff.present.algorithms.IdentifyChangedAnnotation;
+import org.protege.owl.diff.present.algorithms.IdentifyChangedDefinition;
+import org.protege.owl.diff.present.algorithms.IdentifyChangedSuperclass;
 import org.protege.owl.diff.present.algorithms.IdentifyMergedConcepts;
 import org.protege.owl.diff.present.algorithms.IdentifyRetiredConcepts;
 import org.protege.owl.diff.service.CodeToEntityMapper;
 import org.protege.owl.diff.service.RetirementClassService;
 import org.protege.owl.diff.util.StopWatch;
-import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 public class DifferenceConfiguration implements Disposable {
 	public static final String ID = DifferenceConfiguration.class.getCanonicalName();
@@ -96,6 +96,9 @@ public class DifferenceConfiguration implements Disposable {
 			presentationAlgorithms = new ArrayList<PresentationAlgorithm>();
 			presentationAlgorithms.add(new IdentifyRetiredConcepts());
 			presentationAlgorithms.add(new IdentifyMergedConcepts());
+			presentationAlgorithms.add(new IdentifyChangedSuperclass());
+			presentationAlgorithms.add(new IdentifyChangedDefinition());
+			presentationAlgorithms.add(new IdentifyChangedAnnotation());
 		}
 		return presentationAlgorithms;
 	}
