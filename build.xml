@@ -162,6 +162,20 @@ author=The Protege Development Team
        </echo>
    </target>
 
+	<!--
+	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
+
+	  <classpath>
+	    <fileset dir="path/to/jaxb/lib" includes="jaxb-xjc.jar" />
+	  </classpath>
+
+	</taskdef>
+	  -->
+	
+   <target name="jaxb">
+	
+   </target>
+
    <target name = "compile" depends = "buildlibs, checkProtegeLibsAndReport">
      <javac srcdir = "${src}"
             destdir = "${classes}" 
