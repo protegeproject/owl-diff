@@ -22,10 +22,9 @@ import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.diff.model.DifferenceConfiguration;
 import org.protege.editor.owl.diff.model.DifferenceEvent;
 import org.protege.editor.owl.diff.model.DifferenceListener;
-import org.protege.editor.owl.ui.renderer.OWLCellRenderer;
+import org.protege.editor.owl.model.OWLModelManager;
 import org.protege.owl.diff.present.Changes;
 import org.protege.owl.diff.present.EntityBasedDiff;
-import org.semanticweb.owlapi.model.OWLAxiom;
 
 public class DifferenceList extends JPanel implements Disposable {
 	private static final long serialVersionUID = -3297368551819068585L;
@@ -81,7 +80,7 @@ public class DifferenceList extends JPanel implements Disposable {
 		entityBasedDiffList = new JList();
 		entityBasedDiffList.setModel(new DefaultListModel());
 		entityBasedDiffList.setSelectionModel(new DefaultListSelectionModel());
-		entityBasedDiffList.setCellRenderer(new EntityBasedDiffRenderer());
+		entityBasedDiffList.setCellRenderer(new EntityBasedDiffRenderer(editorKit));
 		entityBasedDiffList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		entityBasedDiffList.addListSelectionListener(new ListSelectionListener() {
 
@@ -104,20 +103,44 @@ public class DifferenceList extends JPanel implements Disposable {
 		diffModel = new DifferenceTableModel(diffs.getManager());
 		table.setModel(diffModel);
 		
-		table.setDefaultRenderer(OWLAxiom.class, new OWLCellRenderer(editorKit, false, false));
+		// table.setDefaultRenderer(OWLAxiom.class, new OWLCellRenderer(editorKit, false, false));
 		
 		return new JScrollPane(table);
 	}
 	
 	private static class EntityBasedDiffRenderer extends DefaultListCellRenderer {
 		private static final long serialVersionUID = -2257588249282053158L;
+		private OWLModelManager protegeManager;
+		
+		public EntityBasedDiffRenderer(OWLEditorKit editorKit) {
+			protegeManager = editorKit.getOWLModelManager();
+		}
 
 		@Override
 		public Component getListCellRendererComponent(JList list, Object value,
 													  int index, boolean isSelected, boolean cellHasFocus) {
 			JLabel text = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 			if (value instanceof EntityBasedDiff) {
-				text.setText(((EntityBasedDiff) value).getShortDescription());
+				EntityBasedDiff diff = (EntityBasedDiff) value;
+				StringBuffer diffDescription = new StringBuffer();
+				switch (diff.getDiffType()) {
+				case CREATED:
+					diffDescription.append("Created ");
+					diffDescription.append(protegeManager.getRendering(diff.getTargetEntity()));
+					break;
+				case DELETED:
+					diffDescription.append("Deleted ");
+					diffDescription.append(protegeManager.getRendering(diff.getSourceEntity()));
+					break;
+				case EQUIVALENT:
+					break;
+				case MODIFIED:
+				case RENAMED:
+					diffDescription.append("Modified ");
+					diffDescription.append(protegeManager.getRendering(diff.getSourceEntity()));
+					break;
+				}
+				text.setText(diffDescription.toString());
 			}
 			return this;
 		}
