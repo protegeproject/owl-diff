@@ -20,6 +20,7 @@ import org.protege.owl.diff.present.algorithms.IdentifyChangedAnnotation;
 import org.protege.owl.diff.present.algorithms.IdentifyChangedDefinition;
 import org.protege.owl.diff.present.algorithms.IdentifyChangedSuperclass;
 import org.protege.owl.diff.present.algorithms.IdentifyMergedConcepts;
+import org.protege.owl.diff.present.algorithms.IdentifyRenameOperation;
 import org.protege.owl.diff.present.algorithms.IdentifyRetiredConcepts;
 import org.protege.owl.diff.service.CodeToEntityMapper;
 import org.protege.owl.diff.service.RetirementClassService;
@@ -94,6 +95,7 @@ public class DifferenceConfiguration implements Disposable {
 	public List<PresentationAlgorithm> getPresentationAlgorithms() {
 		if (presentationAlgorithms == null) {
 			presentationAlgorithms = new ArrayList<PresentationAlgorithm>();
+			presentationAlgorithms.add(new IdentifyRenameOperation());
 			presentationAlgorithms.add(new IdentifyRetiredConcepts());
 			presentationAlgorithms.add(new IdentifyMergedConcepts());
 			presentationAlgorithms.add(new IdentifyChangedSuperclass());
