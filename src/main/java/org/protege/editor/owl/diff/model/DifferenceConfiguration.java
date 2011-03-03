@@ -160,7 +160,7 @@ public class DifferenceConfiguration implements Disposable {
 	}
 	
 	private void fireStatusChanged(DifferenceEvent event) {
-		for (DifferenceListener listener : listeners) {
+		for (DifferenceListener listener : new ArrayList<DifferenceListener>(listeners)) {
 			listener.statusChanged(event);
 		}
 	}
