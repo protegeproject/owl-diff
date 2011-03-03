@@ -14,12 +14,14 @@ import org.protege.editor.owl.model.OWLWorkspace;
 import org.protege.editor.owl.ui.UIHelper;
 import org.protege.editor.owl.ui.action.ProtegeOWLAction;
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 
 public class StartDiff extends ProtegeOWLAction {
 	private static final long serialVersionUID = -5400122637724517976L;
+	private boolean loadInSeparateWorkspace = false;
 
 
 	public void initialise() throws Exception {
@@ -42,9 +44,15 @@ public class StartDiff extends ProtegeOWLAction {
 				public void run() {
 					try {
 						monitor.setNote("Loading ontology for comparison");
-						OWLOntologyManager baselineManager = OWLManager.createOWLOntologyManager();
-						baselineManager.setSilentMissingImportsHandling(true);
-						OWLOntology ontology = baselineManager.loadOntologyFromOntologyDocument(f);
+						OWLOntology ontology;
+						if (loadInSeparateWorkspace) {
+							ontology = new SynchronizedWorkspaceFactory(getOWLEditorKit()).loadInSeparateSynchronizedWorkspace(IRI.create(f));
+						}
+						else {
+							OWLOntologyManager baselineManager = OWLManager.createOWLOntologyManager();
+							baselineManager.setSilentMissingImportsHandling(true);
+							ontology = baselineManager.loadOntologyFromOntologyDocument(f);
+						}
 						monitor.setProgress(1);
 						
 						monitor.setNote("Calculating differences");
