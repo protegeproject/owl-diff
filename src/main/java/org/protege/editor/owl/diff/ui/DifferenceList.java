@@ -102,6 +102,8 @@ public class DifferenceList extends JPanel implements Disposable {
 		JTable table = new JTable();
 		diffModel = new DifferenceTableModel(diffs.getManager());
 		table.setModel(diffModel);
+		table.setDefaultRenderer(String.class, new MultiLineCellRenderer());
+		table.setRowHeight(60);
 		
 		// table.setDefaultRenderer(OWLAxiom.class, new OWLCellRenderer(editorKit, false, false));
 		
