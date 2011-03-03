@@ -21,7 +21,7 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 public class StartDiff extends ProtegeOWLAction {
 	private static final long serialVersionUID = -5400122637724517976L;
-	private boolean loadInSeparateWorkspace = false;
+	private boolean loadInSeparateWorkspace = true;
 
 
 	public void initialise() throws Exception {

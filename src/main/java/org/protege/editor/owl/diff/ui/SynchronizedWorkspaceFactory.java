@@ -84,9 +84,13 @@ public class SynchronizedWorkspaceFactory {
 			case SELECTION_CHANGED:
 				if (ready) {
 					EntityBasedDiff diff = diffConfig.getSelection();
-					OWLEntity entity = diff.getSourceEntity();
-					if (entity != null) {
-						selectionModel.setSelectedEntity(entity);
+					OWLEntity sourceEntity = diff.getSourceEntity();
+					if (sourceEntity != null) {
+						selectionModel.setSelectedEntity(sourceEntity);
+					}
+					OWLEntity targetEntity = diff.getTargetEntity();
+					if (targetEntity != null) {
+						eKit.getOWLWorkspace().getOWLSelectionModel().setSelectedEntity(targetEntity);
 					}
 				}
 				break;
