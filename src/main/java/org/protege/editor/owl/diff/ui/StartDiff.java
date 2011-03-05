@@ -9,10 +9,11 @@ import org.protege.editor.core.ProtegeApplication;
 import org.protege.editor.core.ui.workspace.WorkspaceTab;
 import org.protege.editor.core.ui.workspace.WorkspaceTabPlugin;
 import org.protege.editor.core.ui.workspace.WorkspaceTabPluginLoader;
-import org.protege.editor.owl.diff.model.DifferenceConfiguration;
+import org.protege.editor.owl.diff.model.DifferenceManager;
 import org.protege.editor.owl.model.OWLWorkspace;
 import org.protege.editor.owl.ui.UIHelper;
 import org.protege.editor.owl.ui.action.ProtegeOWLAction;
+import org.protege.owl.diff.conf.DefaultConfiguration;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -56,8 +57,8 @@ public class StartDiff extends ProtegeOWLAction {
 						monitor.setProgress(1);
 						
 						monitor.setNote("Calculating differences");
-						DifferenceConfiguration diffs = DifferenceConfiguration.get(getOWLModelManager());
-						diffs.run(ontology);
+						DifferenceManager diffs = DifferenceManager.get(getOWLModelManager());
+						diffs.run(ontology, new DefaultConfiguration());
 						monitor.setProgress(2);
 						
 						selectTab();
