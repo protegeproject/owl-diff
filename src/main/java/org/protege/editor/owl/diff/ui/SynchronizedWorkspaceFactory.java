@@ -3,7 +3,7 @@ package org.protege.editor.owl.diff.ui;
 import org.protege.editor.core.ProtegeManager;
 import org.protege.editor.core.editorkit.EditorKitManager;
 import org.protege.editor.owl.OWLEditorKit;
-import org.protege.editor.owl.diff.model.DifferenceConfiguration;
+import org.protege.editor.owl.diff.model.DifferenceManager;
 import org.protege.editor.owl.diff.model.DifferenceEvent;
 import org.protege.editor.owl.diff.model.DifferenceListener;
 import org.protege.editor.owl.model.selection.OWLSelectionModel;
@@ -61,7 +61,7 @@ public class SynchronizedWorkspaceFactory {
 	}
 	
 	private void synchronizeWorkspaces(OWLEditorKit altEditorKit) {
-		DifferenceConfiguration dc = DifferenceConfiguration.get(eKit.getModelManager());
+		DifferenceManager dc = DifferenceManager.get(eKit.getModelManager());
 		OWLSelectionModel selectionModel = altEditorKit.getOWLWorkspace().getOWLSelectionModel();
 		dc.addDifferenceListener(new SynchronizingListener(dc, selectionModel));
 	}
@@ -69,9 +69,9 @@ public class SynchronizedWorkspaceFactory {
 	private class SynchronizingListener implements DifferenceListener {
 		private boolean ready = false;
 		private OWLSelectionModel selectionModel;
-		private DifferenceConfiguration diffConfig;
+		private DifferenceManager diffConfig;
 		
-		public SynchronizingListener(DifferenceConfiguration diffConfig, OWLSelectionModel selectionModel) {
+		public SynchronizingListener(DifferenceManager diffConfig, OWLSelectionModel selectionModel) {
 			this.diffConfig = diffConfig;
 			this.selectionModel = selectionModel;
 		}
