@@ -19,7 +19,7 @@ import javax.swing.event.ListSelectionListener;
 
 import org.protege.editor.core.Disposable;
 import org.protege.editor.owl.OWLEditorKit;
-import org.protege.editor.owl.diff.model.DifferenceConfiguration;
+import org.protege.editor.owl.diff.model.DifferenceManager;
 import org.protege.editor.owl.diff.model.DifferenceEvent;
 import org.protege.editor.owl.diff.model.DifferenceListener;
 import org.protege.editor.owl.model.OWLModelManager;
@@ -31,7 +31,7 @@ public class DifferenceList extends JPanel implements Disposable {
 	
 	private OWLEditorKit editorKit;
 	
-	private DifferenceConfiguration diffs;
+	private DifferenceManager diffs;
 	private DifferenceTableModel diffModel;
 	
 	private JList entityBasedDiffList;
@@ -57,7 +57,7 @@ public class DifferenceList extends JPanel implements Disposable {
 	public DifferenceList(OWLEditorKit editorKit) {
 		setLayout(new BorderLayout());
 		this.editorKit = editorKit;
-		this.diffs = DifferenceConfiguration.get(editorKit.getModelManager());
+		this.diffs = DifferenceManager.get(editorKit.getModelManager());
 		add(createDifferenceListComponent(), BorderLayout.WEST);
 		add(createDifferenceTable(), BorderLayout.CENTER);
 		if (diffs.isReady()) {
