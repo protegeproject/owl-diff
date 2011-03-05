@@ -6,7 +6,7 @@ import javax.swing.JLabel;
 
 import org.apache.log4j.Logger;
 import org.protege.editor.core.ProtegeApplication;
-import org.protege.editor.owl.diff.model.DifferenceConfiguration;
+import org.protege.editor.owl.diff.model.DifferenceManager;
 import org.protege.editor.owl.diff.model.DifferenceEvent;
 import org.protege.editor.owl.diff.model.DifferenceListener;
 import org.protege.editor.owl.ui.view.AbstractOWLViewComponent;
@@ -34,7 +34,7 @@ public class DiffView extends AbstractOWLViewComponent {
 		
 		status = new JLabel();
 		add(status, BorderLayout.SOUTH);
-		DifferenceConfiguration diffs = DifferenceConfiguration.get(getOWLModelManager());
+		DifferenceManager diffs = DifferenceManager.get(getOWLModelManager());
 		diffs.addDifferenceListener(listener);
 		updateStatus();
 	}
@@ -42,7 +42,7 @@ public class DiffView extends AbstractOWLViewComponent {
 	
 	
 	protected void disposeOWLView() {
-		DifferenceConfiguration diffs = DifferenceConfiguration.get(getOWLModelManager());
+		DifferenceManager diffs = DifferenceManager.get(getOWLModelManager());
 		diffs.removeDifferenceListener(listener);
 		try {
 			view.dispose();
@@ -53,7 +53,7 @@ public class DiffView extends AbstractOWLViewComponent {
 	}
 
 	private void updateStatus() {
-		DifferenceConfiguration diffs = DifferenceConfiguration.get(getOWLModelManager());
+		DifferenceManager diffs = DifferenceManager.get(getOWLModelManager());
 		if (diffs.isReady()) {
 			status.setText("Displaying differences");
 		}
