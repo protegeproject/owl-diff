@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+            jxb:version="2.0">
+
+   <xsd:element name="description">
+      <xsd:complexType>
+         <xsd:sequence>
+            <xsd:element ref="alignmentAlgorithm" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element ref="presentationAlgorithm" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element ref="preset" minOccurs="0" maxOccurs="unbounded"/>
+         </xsd:sequence>
+      </xsd:complexType>
+   </xsd:element>
+
+   <xsd:element name="alignmentAlgorithm">
+      <xsd:complexType>
+         <xsd:sequence>
+            <xsd:element ref="requiredParameter" minOccurs="0" maxOccurs="unbounded"/>
+         </xsd:sequence>
+         <xsd:attribute name="class" type="xsd:string">
+         </xsd:attribute>
+      </xsd:complexType>
+   </xsd:element>
+
+   <xsd:element name="presentationAlgorithm">
+      <xsd:complexType>
+         <xsd:sequence>
+            <xsd:element ref="requiredParameter" minOccurs="0" maxOccurs="unbounded"/>
+         </xsd:sequence>
+         <xsd:attribute name="class" type="xsd:string"/>
+      </xsd:complexType>
+   </xsd:element>
+
+   <xsd:element name="preset">
+      <xsd:complexType>
+         <xsd:sequence>
+            <xsd:element ref="alignmentAlgorithm" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element ref="presentationAlgorithm" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element ref="property" minOccurs="0" maxOccurs="unbounded"/>
+         </xsd:sequence>
+         <xsd:attribute name="name" type="xsd:string"/>
+      </xsd:complexType>
+   </xsd:element>
+
+   <xsd:element name="requiredParameter">
+      <xsd:complexType>
+         <xsd:attribute name="property" type="xsd:string"/>
+      </xsd:complexType>
+   </xsd:element>
+
+   <xsd:element name="property">
+      <xsd:complexType>
+         <xsd:attribute name="name" type="xsd:string"/>
+         <xsd:attribute name="value" type="xsd:string"/>
+      </xsd:complexType>
+   </xsd:element>
+
+</xsd:schema>
