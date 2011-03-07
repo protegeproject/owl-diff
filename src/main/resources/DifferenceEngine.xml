@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description>
+  <!--
+      Alignment Algorithms
+      -->
+  <alignmentAlgorithm 
+     class="org.protege.owl.diff.align.algorithms.MatchByCode">
+    <requiredParameter property="code.annotation.property"/>
+  </alignmentAlgorithm>
+  <alignmentAlgorithm 
+     class="org.protege.owl.diff.align.algorithms.MatchById"/>
+  <alignmentAlgorithm 
+     class="org.protege.owl.diff.align.algorithms.MatchStandardVocabulary"/>
+  <alignmentAlgorithm 
+     class="org.protege.owl.diff.align.algorithms.SuperSubClassPinch"/>
+  
+  <!--
+      Presentation Algorithms
+      -->
+  <presentationAlgorithm 
+     class="org.protege.owl.diff.present.algorithms.IdentifyChangedAnnotation"/>
+  <presentationAlgorithm
+     class="org.protege.owl.diff.present.algorithms.IdentifyChangedDefinition"/>
+  <presentationAlgorithm
+     class="org.protege.owl.diff.present.algorithms.IdentifyChangedSuperclass"/>
+  <presentationAlgorithm
+     class="org.protege.owl.diff.present.algorithms.IdentifyMergedConcepts">
+    <requiredParameter property="merged.into.annotation"/>
+    <requiredParameter property="retirement.class.prefix"/>
+    <requiredParameter property="retirement.status.property"/>
+    <requiredParameter property="retirement.status.string"/>
+  </presentationAlgorithm>
+  <presentationAlgorithm
+     class="org.protege.owl.diff.present.algorithms.IdentifyRenameOperation"/>
+  <presentationAlgorithm
+     class="org.protege.owl.diff.present.algorithms.IdentifyRetiredConcepts">
+    <requiredParameter property="retirement.class.prefix"/>
+    <requiredParameter property="retirement.status.property"/>
+    <requiredParameter property="retirement.status.string"/>
+  </presentationAlgorithm>
+
+  <preset name = "default">
+    <alignmentAlgorithm 
+       class="org.protege.owl.diff.align.algorithms.MatchById"/>
+    <alignmentAlgorithm 
+       class="org.protege.owl.diff.align.algorithms.MatchStandardVocabulary"/>
+    <alignmentAlgorithm 
+       class="org.protege.owl.diff.align.algorithms.SuperSubClassPinch"/>
+    <presentationAlgorithm 
+       class="org.protege.owl.diff.present.algorithms.IdentifyChangedAnnotation"/>
+    <presentationAlgorithm
+       class="org.protege.owl.diff.present.algorithms.IdentifyChangedDefinition"/>
+    <presentationAlgorithm
+       class="org.protege.owl.diff.present.algorithms.IdentifyChangedSuperclass"/>
+    <presentationAlgorithm
+       class="org.protege.owl.diff.present.algorithms.IdentifyRenameOperation"/>
+  </preset>
+</description>
