@@ -40,6 +40,7 @@ public class SynchronizedWorkspaceFactory {
 		}
 		altEditorKit.getOWLModelManager().setActiveOntology(ontology);
 		ProtegeManager.getInstance().getEditorKitManager().addEditorKit(altEditorKit);
+		altEditorKit.getOWLWorkspace().setTitle("Workspace for original version of ontology");
 		synchronizeWorkspaces(altEditorKit);
 		eKit.getOWLWorkspace().requestFocusInWindow();
 		return ontology;
@@ -62,18 +63,19 @@ public class SynchronizedWorkspaceFactory {
 	
 	private void synchronizeWorkspaces(OWLEditorKit altEditorKit) {
 		DifferenceManager dc = DifferenceManager.get(eKit.getModelManager());
-		OWLSelectionModel selectionModel = altEditorKit.getOWLWorkspace().getOWLSelectionModel();
-		dc.addDifferenceListener(new SynchronizingListener(dc, selectionModel));
+		dc.addDifferenceListener(new SynchronizingListener(dc, altEditorKit));
 	}
 	
 	private class SynchronizingListener implements DifferenceListener {
 		private boolean ready = false;
-		private OWLSelectionModel selectionModel;
 		private DifferenceManager diffConfig;
+		private OWLEditorKit altEditorKit;
+		private OWLSelectionModel selectionModel;
 		
-		public SynchronizingListener(DifferenceManager diffConfig, OWLSelectionModel selectionModel) {
+		public SynchronizingListener(DifferenceManager diffConfig, OWLEditorKit altEditorKit) {
 			this.diffConfig = diffConfig;
-			this.selectionModel = selectionModel;
+			this.altEditorKit = altEditorKit;
+			selectionModel = altEditorKit.getOWLWorkspace().getOWLSelectionModel();
 		}
 
 		public void statusChanged(DifferenceEvent event) {
@@ -97,6 +99,7 @@ public class SynchronizedWorkspaceFactory {
 			case DIFF_RESET:
 				if (ready) {
 					diffConfig.removeDifferenceListener(SynchronizingListener.this);
+					altEditorKit.getOWLWorkspace().setTitle(null);
 				}
 				break;
 			default:
