@@ -54,12 +54,12 @@
         <dependency>
           <groupId>protege4</groupId>
           <artifactId>org.protege.editor.owl</artifactId>
-          <version>4.1.0.b213_2010_12_15_1705</version>
+          <version>4.1.0.b213_2011_03_07_2010</version>
         </dependency>
         <dependency>
             <groupId>protege4</groupId>
             <artifactId>org.protege.owl.diff</artifactId>
-            <version>1.0.0.2011_03_05_0724</version>
+            <version>1.0.0.2011_03_07_2010</version>
         </dependency>
         <dependency>
           <groupId>protege4</groupId>
