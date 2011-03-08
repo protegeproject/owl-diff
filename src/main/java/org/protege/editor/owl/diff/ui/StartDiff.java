@@ -11,8 +11,8 @@ import org.protege.editor.core.ui.workspace.WorkspaceTabPlugin;
 import org.protege.editor.core.ui.workspace.WorkspaceTabPluginLoader;
 import org.protege.editor.owl.diff.model.DifferenceManager;
 import org.protege.editor.owl.model.OWLWorkspace;
-import org.protege.editor.owl.ui.UIHelper;
 import org.protege.editor.owl.ui.action.ProtegeOWLAction;
+import org.protege.owl.diff.conf.Configuration;
 import org.protege.owl.diff.conf.DefaultConfiguration;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
@@ -22,7 +22,6 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 public class StartDiff extends ProtegeOWLAction {
 	private static final long serialVersionUID = -5400122637724517976L;
-	private boolean loadInSeparateWorkspace = true;
 
 
 	public void initialise() throws Exception {
@@ -36,8 +35,12 @@ public class StartDiff extends ProtegeOWLAction {
 
 	
 	public void actionPerformed(ActionEvent e) {
-		final File f = new UIHelper(getOWLEditorKit()).chooseOWLFile("Choose File to compare");
-		if (f != null) {
+		ConfigureDifferenceRun confWindow = new ConfigureDifferenceRun(getOWLEditorKit());
+		confWindow.setVisible(true);
+		final File f = confWindow.getBaseline();
+		final boolean loadInSeparateWorkspace = confWindow.getOpenBaselineInSeparateWindow();
+		final Configuration configuration = confWindow.getConfiguration();
+		if (confWindow.isCommit() && f != null) {
 			final ProgressMonitor monitor = new ProgressMonitor(getOWLWorkspace(), "Calculating Differences", "", 0, 2);
 			monitor.setMillisToPopup(100);
 			new Thread(new Runnable() {
@@ -58,7 +61,7 @@ public class StartDiff extends ProtegeOWLAction {
 						
 						monitor.setNote("Calculating differences");
 						DifferenceManager diffs = DifferenceManager.get(getOWLModelManager());
-						diffs.run(ontology, new DefaultConfiguration());
+						diffs.run(ontology, configuration);
 						monitor.setProgress(2);
 						
 						selectTab();
