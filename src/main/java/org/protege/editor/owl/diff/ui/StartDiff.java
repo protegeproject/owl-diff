@@ -3,6 +3,7 @@ package org.protege.editor.owl.diff.ui;
 import java.awt.event.ActionEvent;
 import java.io.File;
 
+import javax.swing.JOptionPane;
 import javax.swing.ProgressMonitor;
 
 import org.protege.editor.core.ProtegeApplication;
