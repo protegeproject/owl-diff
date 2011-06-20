@@ -14,15 +14,15 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
-public class SynchronizedWorkspaceFactory {
+public class OntologyInAltWorkspaceFactory {
 	private OWLEditorKit eKit;
+	private OWLEditorKit altEditorKit;
 	
-	public SynchronizedWorkspaceFactory(OWLEditorKit eKit) {
+	public OntologyInAltWorkspaceFactory(OWLEditorKit eKit) {
 		this.eKit = eKit;
 	}
 	
 	public OWLOntology loadInSeparateSynchronizedWorkspace(IRI ontologyLocation) throws OWLOntologyCreationException {
-		OWLEditorKit altEditorKit;
 		try {
 			altEditorKit = (OWLEditorKit) (eKit.getEditorKitFactory()).createEditorKit();
 		}
@@ -41,7 +41,6 @@ public class SynchronizedWorkspaceFactory {
 		altEditorKit.getOWLModelManager().setActiveOntology(ontology);
 		ProtegeManager.getInstance().getEditorKitManager().addEditorKit(altEditorKit);
 		altEditorKit.getOWLWorkspace().setTitle("Workspace for original version of ontology");
-		synchronizeWorkspaces(altEditorKit);
 		eKit.getOWLWorkspace().requestFocusInWindow();
 		return ontology;
 	}
@@ -61,51 +60,7 @@ public class SynchronizedWorkspaceFactory {
 		return manager.loadOntologyFromOntologyDocument(ontologyLocation);
 	}
 	
-	private void synchronizeWorkspaces(OWLEditorKit altEditorKit) {
-		DifferenceManager dc = DifferenceManager.get(eKit.getModelManager());
-		dc.addDifferenceListener(new SynchronizingListener(dc, altEditorKit));
-	}
-	
-	private class SynchronizingListener implements DifferenceListener {
-		private boolean ready = false;
-		private DifferenceManager diffConfig;
-		private OWLEditorKit altEditorKit;
-		private OWLSelectionModel selectionModel;
-		
-		public SynchronizingListener(DifferenceManager diffConfig, OWLEditorKit altEditorKit) {
-			this.diffConfig = diffConfig;
-			this.altEditorKit = altEditorKit;
-			selectionModel = altEditorKit.getOWLWorkspace().getOWLSelectionModel();
-		}
-
-		public void statusChanged(DifferenceEvent event) {
-			switch (event) {
-			case DIFF_COMPLETED:
-				ready = true;
-				break;
-			case SELECTION_CHANGED:
-				if (ready) {
-					EntityBasedDiff diff = diffConfig.getSelection();
-					OWLEntity sourceEntity = diff.getSourceEntity();
-					if (sourceEntity != null) {
-						selectionModel.setSelectedEntity(sourceEntity);
-					}
-					OWLEntity targetEntity = diff.getTargetEntity();
-					if (targetEntity != null) {
-						eKit.getOWLWorkspace().getOWLSelectionModel().setSelectedEntity(targetEntity);
-					}
-				}
-				break;
-			case DIFF_RESET:
-				if (ready) {
-					diffConfig.removeDifferenceListener(SynchronizingListener.this);
-					altEditorKit.getOWLWorkspace().setTitle(null);
-				}
-				break;
-			default:
-				throw new IllegalStateException("Programmer error");
-			}
-		}
-		
+	public OWLEditorKit getAltEditorKit() {
+		return altEditorKit;
 	}
 }
