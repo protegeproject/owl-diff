@@ -48,6 +48,7 @@ public class DifferenceList extends JPanel implements Disposable {
 			else if (event == DifferenceEvent.SELECTION_CHANGED) {
 				EntityBasedDiff diff = diffs.getSelection();
 				if (diff != null) {
+					entityBasedDiffList.setSelectedValue(diff, true);
 					diffModel.setMatches(diff.getAxiomMatches());
 				}
 			}
