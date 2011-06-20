@@ -50,8 +50,10 @@ public class StartDiff extends ProtegeOWLAction {
 					try {
 						monitor.setNote("Loading ontology for comparison");
 						OWLOntology ontology;
+						OntologyInAltWorkspaceFactory factory = null;
 						if (loadInSeparateWorkspace) {
-							ontology = new SynchronizedWorkspaceFactory(getOWLEditorKit()).loadInSeparateSynchronizedWorkspace(IRI.create(f));
+							factory = new OntologyInAltWorkspaceFactory(getOWLEditorKit());
+							ontology = factory.loadInSeparateSynchronizedWorkspace(IRI.create(f));
 						}
 						else {
 							OWLOntologyManager baselineManager = OWLManager.createOWLOntologyManager();
@@ -64,6 +66,10 @@ public class StartDiff extends ProtegeOWLAction {
 						DifferenceManager diffs = DifferenceManager.get(getOWLModelManager());
 						diffs.run(ontology, configuration);
 						monitor.setProgress(2);
+						if (loadInSeparateWorkspace) {
+							SynchronizeDifferenceListener.synchronize(diffs, factory.getAltEditorKit(), false);
+						}
+						SynchronizeDifferenceListener.synchronize(diffs, getOWLEditorKit(), true);
 						
 						selectTab();
 					}
