@@ -49,12 +49,12 @@
         <dependency>
           <groupId>protege4</groupId>
           <artifactId>org.protege.editor.core.application</artifactId>
-          <version>4.1.0.b213_2010_12_15_1123</version>
+          <version>4.1.0.b220_2011_03_31_0639</version>
         </dependency>
         <dependency>
           <groupId>protege4</groupId>
           <artifactId>org.protege.editor.owl</artifactId>
-          <version>4.1.0.b213_2011_03_07_2010</version>
+          <version>4.1.0.b220_2011_03_23_1149</version>
         </dependency>
         <dependency>
             <groupId>protege4</groupId>
