@@ -19,12 +19,14 @@ import javax.swing.event.ListSelectionListener;
 
 import org.protege.editor.core.Disposable;
 import org.protege.editor.owl.OWLEditorKit;
-import org.protege.editor.owl.diff.model.DifferenceManager;
 import org.protege.editor.owl.diff.model.DifferenceEvent;
 import org.protege.editor.owl.diff.model.DifferenceListener;
+import org.protege.editor.owl.diff.model.DifferenceManager;
 import org.protege.editor.owl.model.OWLModelManager;
+import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.present.Changes;
 import org.protege.owl.diff.present.EntityBasedDiff;
+import org.semanticweb.owlapi.model.OWLEntity;
 
 public class DifferenceList extends JPanel implements Disposable {
 	private static final long serialVersionUID = -3297368551819068585L;
@@ -35,6 +37,7 @@ public class DifferenceList extends JPanel implements Disposable {
 	private DifferenceTableModel diffModel;
 	
 	private JList entityBasedDiffList;
+	private JLabel explanationLabel;
 	
 	private DifferenceListener diffListener = new DifferenceListener() {
 		public void statusChanged(DifferenceEvent event) {
@@ -46,10 +49,23 @@ public class DifferenceList extends JPanel implements Disposable {
 				diffModel.clear();
 			}
 			else if (event == DifferenceEvent.SELECTION_CHANGED) {
-				EntityBasedDiff diff = diffs.getSelection();
-				if (diff != null) {
-					entityBasedDiffList.setSelectedValue(diff, true);
-					diffModel.setMatches(diff.getAxiomMatches());
+				selectionChanged();
+			}
+		}
+		
+		private void selectionChanged() {
+			explanationLabel.setText("");
+			EntityBasedDiff diff = diffs.getSelection();
+			if (diff != null) {
+				entityBasedDiffList.setSelectedValue(diff, true);
+				diffModel.setMatches(diff.getAxiomMatches());
+				OWLEntity sourceEntity = diff.getSourceEntity();
+				if (sourceEntity != null) {
+					OwlDiffMap diffMap = diffs.getEngine().getOwlDiffMap();
+					String explanation = diffMap.getExplanation(sourceEntity);
+					if (explanation != null) {
+						explanationLabel.setText(explanation);
+					}
 				}
 			}
 		}
@@ -100,6 +116,12 @@ public class DifferenceList extends JPanel implements Disposable {
 	}
 	
 	private JComponent createDifferenceTable() {
+		JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+		
+		explanationLabel = new JLabel();
+		panel.add(explanationLabel, BorderLayout.NORTH);
+		
 		JTable table = new JTable();
 		diffModel = new DifferenceTableModel(diffs.getManager());
 		table.setModel(diffModel);
@@ -108,7 +130,8 @@ public class DifferenceList extends JPanel implements Disposable {
 		
 		// table.setDefaultRenderer(OWLAxiom.class, new OWLCellRenderer(editorKit, false, false));
 		
-		return new JScrollPane(table);
+		panel.add(new JScrollPane(table), BorderLayout.CENTER);
+		return panel;
 	}
 	
 	private static class EntityBasedDiffRenderer extends DefaultListCellRenderer {
