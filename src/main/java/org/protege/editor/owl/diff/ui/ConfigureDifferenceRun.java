@@ -5,6 +5,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
+import java.awt.GridLayout;
+import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -12,6 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -27,6 +30,8 @@ import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.model.OWLModelManager;
 import org.protege.editor.owl.ui.UIHelper;
+import org.protege.owl.diff.align.AlignmentAggressiveness;
+import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.algorithms.MatchByCode;
 import org.protege.owl.diff.align.algorithms.MatchById;
 import org.protege.owl.diff.align.algorithms.MatchByIdFragment;
@@ -49,8 +54,7 @@ public class ConfigureDifferenceRun extends JDialog {
 	private OWLEditorKit eKit;
 	private File baseline;
 	private JCheckBox openBaselineInSeparateWindow;
-	private JCheckBox useRdfIdFragments;
-	private JCheckBox ignoreRefactors;
+	private JComboBox aggressiveness;
 	private JCheckBox useLabel;
 	private JComboBox labelBox;
 	private boolean ok = false;
@@ -77,18 +81,19 @@ public class ConfigureDifferenceRun extends JDialog {
 	public Configuration getConfiguration() {
 		Configuration config = new Configuration();
 		if (useLabel.isSelected()) {
-			config.addAlignmentAlgorithm(MatchByCode.class);
 			config.put(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, ((OWLAnnotationProperty) labelBox.getSelectedItem()).toString());
 		}
-		config.addAlignmentAlgorithm(MatchById.class);
-		config.addAlignmentAlgorithm(MatchStandardVocabulary.class);
-		if (useRdfIdFragments.isSelected()) {
-			config.addAlignmentAlgorithm(MatchByIdFragment.class);
-		}
-		if (!ignoreRefactors.isSelected()) {
-			config.addAlignmentAlgorithm(SuperSubClassPinch.class);
-			config.addAlignmentAlgorithm(MatchLoneSiblings.class);
-			config.addAlignmentAlgorithm(MatchSiblingsWithSimilarIds.class);
+		AlignmentAlgorithm allAlignmentAlgorithms[] = {   // improve...
+				new MatchById(), new MatchByCode(), new MatchStandardVocabulary(),
+				new MatchByIdFragment(), new MatchSiblingsWithSimilarIds(),
+				new SuperSubClassPinch(),
+				new MatchLoneSiblings()
+		};
+		AlignmentAggressiveness effort = (AlignmentAggressiveness) aggressiveness.getSelectedItem();
+		for (AlignmentAlgorithm alg : allAlignmentAlgorithms) {
+			if (alg.getAggressiveness().compareTo(effort) <= 0) {
+				config.addAlignmentAlgorithm(alg.getClass());
+			}
 		}
 		
 		config.addPresentationAlgorithm(IdentifyChangedAnnotation.class);
@@ -107,19 +112,28 @@ public class ConfigureDifferenceRun extends JDialog {
 		addButtons();
 	}
 	
+	/*
+	 * TODO - gui needs work...
+	 * I got it centered by making lots of sub-panels and marking everything as being left aligned...
+	 */
 	private void addCenterPanel() {
 		JPanel centerPanel = new JPanel();
-		BoxLayout layout = new BoxLayout(centerPanel, BoxLayout.Y_AXIS);
+		LayoutManager layout = new GridLayout(0,1);
 		centerPanel.setLayout(layout);
+		centerPanel.setAlignmentY(LEFT_ALIGNMENT);
 		centerPanel.add(createFilePanel());
-		addBooleanOptions(centerPanel);
+		centerPanel.add(createOpenInSeparateWorkspace());
 		centerPanel.add(createAlignByLabelComponent());
+		centerPanel.add(chooseAggressivenessDropdown());
 		add(centerPanel, BorderLayout.CENTER);
 	}
 
 	private JPanel createFilePanel() {
 		JPanel panel = new JPanel(new FlowLayout());
-		panel.add(new JLabel("Original Version of the file: "));
+		panel.setAlignmentY(LEFT_ALIGNMENT);
+		JLabel label = new JLabel("Original Version of the file: ");
+		label.setAlignmentY(LEFT_ALIGNMENT);
+		panel.add(label);
 		final JTextField baselineTextField = new JTextField();
 		Dimension preferredTextFieldDimension = new JTextField("Thesaurus-101129-10.11e.owl").getPreferredSize();
 		baselineTextField.setPreferredSize(preferredTextFieldDimension);
@@ -138,36 +152,25 @@ public class ConfigureDifferenceRun extends JDialog {
 				}
 			}
 		});
-		panel.setAlignmentX(LEFT_ALIGNMENT);
+		panel.setAlignmentY(LEFT_ALIGNMENT);
 		return panel;
 	}
 	
-	private void addBooleanOptions(JPanel centerPanel) {
-		JPanel panel = new JPanel();
-		BoxLayout layout = new BoxLayout(panel, BoxLayout.Y_AXIS);
-		panel.setLayout(layout);
-		
+	private JComponent createOpenInSeparateWorkspace() {
+		JPanel panel = new JPanel(new FlowLayout());
+		panel.setAlignmentY(LEFT_ALIGNMENT);
 		openBaselineInSeparateWindow = new JCheckBox("Open original ontology in separate workspace");
-		openBaselineInSeparateWindow.setAlignmentX(LEFT_ALIGNMENT);
+		openBaselineInSeparateWindow.setAlignmentY(LEFT_ALIGNMENT);
 		panel.add(openBaselineInSeparateWindow);
-		
-		ignoreRefactors = new JCheckBox("Don't look for refactor operations");
-		ignoreRefactors.setAlignmentX(LEFT_ALIGNMENT);
-		panel.add(ignoreRefactors);
-
-		useRdfIdFragments = new JCheckBox("Use rdf:id fragments to align ontologies");
-		useRdfIdFragments.setAlignmentX(LEFT_ALIGNMENT);
-		panel.add(useRdfIdFragments);
-		
-		panel.setAlignmentX(0.1f);
-		centerPanel.add(panel);
+		return panel;
 	}
 	
 	private JComponent createAlignByLabelComponent() {
 		JPanel panel = new JPanel(new FlowLayout());
+		panel.setAlignmentY(LEFT_ALIGNMENT);
 		
 		useLabel = new JCheckBox("Align entities using an annotation property");
-		useLabel.setAlignmentX(LEFT_ALIGNMENT);
+		useLabel.setAlignmentY(LEFT_ALIGNMENT);
 		panel.add(useLabel);
 		
 		labelBox = new JComboBox(getAnnotationProperties().toArray());
@@ -183,7 +186,7 @@ public class ConfigureDifferenceRun extends JDialog {
 		});
 		labelBox.setSelectedItem(p4Manager.getOWLDataFactory().getRDFSLabel());
 		panel.add(labelBox);
-		panel.setAlignmentX(LEFT_ALIGNMENT);
+		panel.setAlignmentY(LEFT_ALIGNMENT);
 		
 		return panel;
 	}
@@ -195,6 +198,30 @@ public class ConfigureDifferenceRun extends JDialog {
 			annotationProperties.addAll(ontology.getAnnotationPropertiesInSignature());
 		}
 		return annotationProperties;
+	}
+	
+	private JComponent chooseAggressivenessDropdown() {
+		JPanel panel = new JPanel();
+		panel.setLayout(new FlowLayout());
+		panel.setAlignmentY(LEFT_ALIGNMENT);
+		aggressiveness = new JComboBox();
+		aggressiveness.setRenderer(new DefaultListCellRenderer() {
+			private static final long serialVersionUID = 6340827743615126160L;
+
+			@Override
+			public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+				JLabel rendering = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+				rendering.setText(((AlignmentAggressiveness) value).getDescription());
+				return rendering;
+			}
+		});
+		for (AlignmentAggressiveness effort : AlignmentAggressiveness.values()) {
+			aggressiveness.addItem(effort);
+		}
+		aggressiveness.setSelectedItem(AlignmentAggressiveness.IGNORE_REFACTOR);
+		aggressiveness.setAlignmentY(LEFT_ALIGNMENT);
+		panel.add(aggressiveness);
+		return panel;
 	}
 	
 	
