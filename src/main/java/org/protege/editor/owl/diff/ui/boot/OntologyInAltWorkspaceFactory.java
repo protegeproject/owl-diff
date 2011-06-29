@@ -1,20 +1,16 @@
 package org.protege.editor.owl.diff.ui.boot;
 
+import java.util.UUID;
+
+import org.protege.editor.core.Disposable;
 import org.protege.editor.core.ProtegeManager;
-import org.protege.editor.core.editorkit.EditorKitManager;
 import org.protege.editor.owl.OWLEditorKit;
-import org.protege.editor.owl.diff.model.DifferenceManager;
-import org.protege.editor.owl.diff.model.DifferenceEvent;
-import org.protege.editor.owl.diff.model.DifferenceListener;
-import org.protege.editor.owl.model.selection.OWLSelectionModel;
-import org.protege.owl.diff.present.EntityBasedDiff;
 import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
-public class OntologyInAltWorkspaceFactory {
+public class OntologyInAltWorkspaceFactory implements Disposable {
 	private OWLEditorKit eKit;
 	private OWLEditorKit altEditorKit;
 	
@@ -41,6 +37,7 @@ public class OntologyInAltWorkspaceFactory {
 		altEditorKit.getOWLModelManager().setActiveOntology(ontology);
 		ProtegeManager.getInstance().getEditorKitManager().addEditorKit(altEditorKit);
 		altEditorKit.getOWLWorkspace().setTitle("Workspace for original version of ontology");
+		altEditorKit.put(UUID.randomUUID(), this); // ensure its disposal.
 		eKit.getOWLWorkspace().requestFocusInWindow();
 		return ontology;
 	}
@@ -62,5 +59,10 @@ public class OntologyInAltWorkspaceFactory {
 	
 	public OWLEditorKit getAltEditorKit() {
 		return altEditorKit;
+	}
+	
+	public void dispose() throws Exception {
+		eKit = null;
+		altEditorKit = null;
 	}
 }
