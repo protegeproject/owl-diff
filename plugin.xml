@@ -9,6 +9,8 @@
                point="org.protege.editor.core.application.ViewComponent">
         <label value="Difference List"/>
         <class value="org.protege.editor.owl.diff.ui.DiffView"/>
+        <headerColor value="@org.protege.ontologycolor"/>
+        <category value="@org.protege.differencecategory"/>
     </extension>
     
     <extension id="DifferenceTable"
