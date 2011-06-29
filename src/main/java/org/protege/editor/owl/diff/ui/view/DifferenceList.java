@@ -43,8 +43,8 @@ public class DifferenceList extends JPanel implements Disposable {
 	private DifferenceListener diffListener = new DifferenceListener() {
 		public void statusChanged(DifferenceEvent event) {
 			if (event == DifferenceEvent.DIFF_COMPLETED) {
-				fillEntityBasedDiffList();
 				renderer = RenderingService.get(diffs.getEngine());
+				fillEntityBasedDiffList();
 			}
 			else if (event == DifferenceEvent.DIFF_RESET) {
 				entityBasedDiffList.removeAll();
