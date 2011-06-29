@@ -34,4 +34,5 @@ Import-Package: javax.swing,
  org.semanticweb.owlapi.model,
  org.semanticweb.owlapi.util
 Export-Package: org.protege.editor.owl.diff.model,
- org.protege.editor.owl.diff.ui
+ org.protege.editor.owl.diff.ui.boot,
+ org.protege.editor.owl.diff.ui.view
