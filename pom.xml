@@ -62,9 +62,9 @@
             <version>1.0.0.2011_06_29_1316</version>
         </dependency>
         <dependency>
-          <groupId>protege4</groupId>
-          <artifactId>org.semanticweb.owl.owlapi</artifactId>
-          <version>3.2.2.Svn_1799_3_2_2_release_2011_04_07_1323</version>
+          <groupId>owlapi</groupId>
+          <artifactId>owlapi</artifactId>
+          <version>3.2.3_svn1824_2011_06_29_1327</version>
           <type>jar</type>
         </dependency>
 		<dependency>
