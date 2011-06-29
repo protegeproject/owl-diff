@@ -1,7 +1,6 @@
 package org.protege.editor.owl.diff.ui.view;
 
 import java.awt.BorderLayout;
-import java.util.Map.Entry;
 
 import javax.swing.JLabel;
 
