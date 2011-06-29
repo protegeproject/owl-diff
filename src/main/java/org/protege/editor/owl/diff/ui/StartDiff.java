@@ -13,6 +13,7 @@ import org.protege.editor.core.ProtegeApplication;
 import org.protege.editor.core.ui.workspace.WorkspaceTab;
 import org.protege.editor.core.ui.workspace.WorkspaceTabPlugin;
 import org.protege.editor.core.ui.workspace.WorkspaceTabPluginLoader;
+import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.diff.model.DifferenceManager;
 import org.protege.editor.owl.model.OWLWorkspace;
 import org.protege.editor.owl.ui.action.ProtegeOWLAction;
@@ -22,10 +23,12 @@ import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.conf.Configuration;
 import org.protege.owl.diff.service.RenderingService;
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.io.FileDocumentSource;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyLoaderConfiguration;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologySetProvider;
 import org.semanticweb.owlapi.util.AnnotationValueShortFormProvider;
@@ -35,6 +38,10 @@ import org.semanticweb.owlapi.util.OWLOntologyImportsClosureSetProvider;
 public class StartDiff extends ProtegeOWLAction {
 	private static final long serialVersionUID = -5400122637724517976L;
 
+	public static OWLEditorKit getAltEditorKit(Engine e) {
+		OntologyInAltWorkspaceFactory factory = e.getService(OntologyInAltWorkspaceFactory.class);
+		return factory != null ? factory.getAltEditorKit() : null;
+	}
 
 	public void initialise() throws Exception {
 
@@ -67,9 +74,10 @@ public class StartDiff extends ProtegeOWLAction {
 							baselineOntology = factory.loadInSeparateSynchronizedWorkspace(IRI.create(f));
 						}
 						else {
+							OWLOntologyLoaderConfiguration configuration = new OWLOntologyLoaderConfiguration();
+							configuration.setSilentMissingImportsHandling(true);
 							OWLOntologyManager baselineManager = OWLManager.createOWLOntologyManager();
-							baselineManager.setSilentMissingImportsHandling(true);
-							baselineOntology = baselineManager.loadOntologyFromOntologyDocument(f);
+							baselineOntology = baselineManager.loadOntologyFromOntologyDocument(new FileDocumentSource(f), configuration);
 						}
 						monitor.setProgress(1);
 						
@@ -79,6 +87,7 @@ public class StartDiff extends ProtegeOWLAction {
 						monitor.setProgress(2);
 						if (loadInSeparateWorkspace) {
 							SynchronizeDifferenceListener.synchronize(diffs, factory.getAltEditorKit(), false);
+							diffs.getEngine().addService(factory);
 						}
 						SynchronizeDifferenceListener.synchronize(diffs, getOWLEditorKit(), true);
 						setupRendering(diffs);
