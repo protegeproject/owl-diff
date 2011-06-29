@@ -1,4 +1,4 @@
-package org.protege.editor.owl.diff.ui;
+package org.protege.editor.owl.diff.ui.boot;
 
 import java.util.UUID;
 

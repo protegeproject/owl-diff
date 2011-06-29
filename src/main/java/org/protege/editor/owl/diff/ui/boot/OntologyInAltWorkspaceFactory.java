@@ -1,4 +1,4 @@
-package org.protege.editor.owl.diff.ui;
+package org.protege.editor.owl.diff.ui.boot;
 
 import org.protege.editor.core.ProtegeManager;
 import org.protege.editor.core.editorkit.EditorKitManager;
