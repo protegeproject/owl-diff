@@ -12,6 +12,14 @@
         <headerColor value="@org.protege.ontologycolor"/>
         <category value="@org.protege.differencecategory"/>
     </extension>
+
+    <extension id="Missing Refactors View"
+               point="org.protege.editor.core.application.ViewComponent">
+        <label value="Missing Refactors"/>
+        <class value="org.protege.editor.owl.diff.ui.view.MissingRefactorsView"/>
+        <headerColor value="@org.protege.ontologycolor"/>
+        <category value="@org.protege.differencecategory"/>
+    </extension>
     
     <extension id="DifferenceTable"
          	  name="Difference Table"
