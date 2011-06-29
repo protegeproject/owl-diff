@@ -8,6 +8,7 @@ import javax.swing.table.AbstractTableModel;
 
 import org.protege.editor.owl.model.OWLModelManager;
 import org.protege.owl.diff.present.MatchedAxiom;
+import org.protege.owl.diff.service.RenderingService;
 import org.semanticweb.owlapi.model.OWLAxiom;
 
 public class DifferenceTableModel extends AbstractTableModel {
@@ -30,11 +31,11 @@ public class DifferenceTableModel extends AbstractTableModel {
 		}
 	}
 	
-	private OWLModelManager protegeModelManager;
+	private RenderingService renderer;
 	private List<MatchedAxiom> matches = new ArrayList<MatchedAxiom>();
 	
-	public DifferenceTableModel(OWLModelManager protegeModelManager) {
-		this.protegeModelManager = protegeModelManager;
+	public DifferenceTableModel(RenderingService renderer) {
+		this.renderer = renderer;
 	}
 	
 	public void setMatches(SortedSet<MatchedAxiom> matches) {
@@ -79,11 +80,11 @@ public class DifferenceTableModel extends AbstractTableModel {
 			return match.getDescription();
 		case SOURCE_AXIOM:
 			axiom = match.getSourceAxiom();
-			return axiom == null ? "" : protegeModelManager.getRendering(axiom);
+			return axiom == null ? "" : renderer.renderSourceObject(axiom);
 			// return axiom;
 		case TARGET_AXIOM:
 			axiom = match.getTargetAxiom();
-			return axiom == null ? "" : protegeModelManager.getRendering(axiom);
+			return axiom == null ? "" : renderer.renderTargetObject(axiom);
 			// return axiom;
 		default:
 			throw new IllegalStateException("Programmer error");

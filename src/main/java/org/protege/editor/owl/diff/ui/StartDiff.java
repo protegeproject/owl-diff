@@ -2,8 +2,11 @@ package org.protege.editor.owl.diff.ui;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import javax.swing.JOptionPane;
 import javax.swing.ProgressMonitor;
 
 import org.protege.editor.core.ProtegeApplication;
@@ -13,12 +16,20 @@ import org.protege.editor.core.ui.workspace.WorkspaceTabPluginLoader;
 import org.protege.editor.owl.diff.model.DifferenceManager;
 import org.protege.editor.owl.model.OWLWorkspace;
 import org.protege.editor.owl.ui.action.ProtegeOWLAction;
+import org.protege.editor.owl.ui.renderer.OWLRendererPreferences;
+import org.protege.owl.diff.Engine;
+import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.conf.Configuration;
-import org.protege.owl.diff.conf.DefaultConfiguration;
+import org.protege.owl.diff.service.RenderingService;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAnnotationProperty;
+import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.model.OWLOntologySetProvider;
+import org.semanticweb.owlapi.util.AnnotationValueShortFormProvider;
+import org.semanticweb.owlapi.util.OWLOntologyImportsClosureSetProvider;
 
 
 public class StartDiff extends ProtegeOWLAction {
@@ -49,27 +60,28 @@ public class StartDiff extends ProtegeOWLAction {
 				public void run() {
 					try {
 						monitor.setNote("Loading ontology for comparison");
-						OWLOntology ontology;
+						OWLOntology baselineOntology;
 						OntologyInAltWorkspaceFactory factory = null;
 						if (loadInSeparateWorkspace) {
 							factory = new OntologyInAltWorkspaceFactory(getOWLEditorKit());
-							ontology = factory.loadInSeparateSynchronizedWorkspace(IRI.create(f));
+							baselineOntology = factory.loadInSeparateSynchronizedWorkspace(IRI.create(f));
 						}
 						else {
 							OWLOntologyManager baselineManager = OWLManager.createOWLOntologyManager();
 							baselineManager.setSilentMissingImportsHandling(true);
-							ontology = baselineManager.loadOntologyFromOntologyDocument(f);
+							baselineOntology = baselineManager.loadOntologyFromOntologyDocument(f);
 						}
 						monitor.setProgress(1);
 						
 						monitor.setNote("Calculating differences");
 						DifferenceManager diffs = DifferenceManager.get(getOWLModelManager());
-						diffs.run(ontology, configuration);
+						diffs.run(baselineOntology, configuration);
 						monitor.setProgress(2);
 						if (loadInSeparateWorkspace) {
 							SynchronizeDifferenceListener.synchronize(diffs, factory.getAltEditorKit(), false);
 						}
 						SynchronizeDifferenceListener.synchronize(diffs, getOWLEditorKit(), true);
+						setupRendering(diffs);
 						
 						selectTab();
 					}
@@ -83,6 +95,30 @@ public class StartDiff extends ProtegeOWLAction {
 			}).start();
 		}
 
+	}
+	
+	private void setupRendering(DifferenceManager diffs) {
+		Engine e = diffs.getEngine();
+		OwlDiffMap diffMap = e.getOwlDiffMap();
+		OWLDataFactory factory = e.getOWLDataFactory();
+		RenderingService renderer = RenderingService.get(e);
+		OWLRendererPreferences preferences = OWLRendererPreferences.getInstance();
+		List<String> langs = preferences.getAnnotationLangs();
+		Map<OWLAnnotationProperty, List<String>> langMap = new HashMap<OWLAnnotationProperty, List<String>>();
+		List<OWLAnnotationProperty> annotationProperties = new ArrayList<OWLAnnotationProperty>();
+		for (IRI iri : preferences.getAnnotationIRIs()) {
+			OWLAnnotationProperty annotationProperty = factory.getOWLAnnotationProperty(iri);
+			annotationProperties.add(annotationProperty);
+			langMap.put(annotationProperty, langs);
+		}
+		
+		OWLOntology sourceOntology = diffMap.getSourceOntology();
+		OWLOntologySetProvider sourceOntologies = new OWLOntologyImportsClosureSetProvider(sourceOntology.getOWLOntologyManager(), sourceOntology);
+		renderer.setSourceShortFormProvider(new AnnotationValueShortFormProvider(annotationProperties, langMap, sourceOntologies));
+		
+		OWLOntology targetOntology = diffMap.getTargetOntology();
+		OWLOntologySetProvider targetOntologies = new OWLOntologyImportsClosureSetProvider(targetOntology.getOWLOntologyManager(), targetOntology);
+		renderer.setTargetShortFormProvider(new AnnotationValueShortFormProvider(annotationProperties, langMap, targetOntologies));
 	}
 	
 	private void selectTab() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
