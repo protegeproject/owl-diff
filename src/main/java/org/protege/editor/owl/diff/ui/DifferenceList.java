@@ -1,14 +1,12 @@
 package org.protege.editor.owl.diff.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JComponent;
@@ -46,6 +44,7 @@ public class DifferenceList extends JPanel implements Disposable {
 		public void statusChanged(DifferenceEvent event) {
 			if (event == DifferenceEvent.DIFF_COMPLETED) {
 				fillEntityBasedDiffList();
+				renderer = RenderingService.get(diffs.getEngine());
 			}
 			else if (event == DifferenceEvent.DIFF_RESET) {
 				entityBasedDiffList.removeAll();
@@ -77,7 +76,9 @@ public class DifferenceList extends JPanel implements Disposable {
 	public DifferenceList(OWLEditorKit editorKit) {
 		setLayout(new BorderLayout());
 		this.diffs = DifferenceManager.get(editorKit.getModelManager());
-		renderer = RenderingService.get(diffs.getEngine());
+		if (diffs.getEngine() != null) {
+			renderer = RenderingService.get(diffs.getEngine());
+		}
 		add(createDifferenceListComponent(), BorderLayout.WEST);
 		add(createDifferenceTable(), BorderLayout.CENTER);
 		if (diffs.isReady()) {
@@ -141,27 +142,6 @@ public class DifferenceList extends JPanel implements Disposable {
 		
 		panel.add(new JScrollPane(table), BorderLayout.CENTER);
 		return panel;
-	}
-	
-	private static class EntityBasedDiffRenderer extends DefaultListCellRenderer {
-		private static final long serialVersionUID = -2257588249282053158L;
-		private RenderingService renderer;
-		
-		public EntityBasedDiffRenderer(RenderingService renderer) {
-			this.renderer = renderer;
-		}
-
-		@Override
-		public Component getListCellRendererComponent(JList list, Object value,
-													  int index, boolean isSelected, boolean cellHasFocus) {
-			JLabel text = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-			if (value instanceof EntityBasedDiff) {
-				EntityBasedDiff diff = (EntityBasedDiff) value;
-				text.setText(renderer.renderDiff(diff));
-			}
-			return this;
-		}
-		
 	}
 	
 	public void dispose() {
