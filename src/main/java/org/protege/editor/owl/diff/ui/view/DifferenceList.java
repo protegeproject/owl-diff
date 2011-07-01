@@ -24,6 +24,7 @@ import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.diff.model.DifferenceEvent;
 import org.protege.editor.owl.diff.model.DifferenceListener;
 import org.protege.editor.owl.diff.model.DifferenceManager;
+import org.protege.editor.owl.diff.ui.boot.StartDiff;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.present.Changes;
 import org.protege.owl.diff.present.EntityBasedDiff;
@@ -32,6 +33,8 @@ import org.semanticweb.owlapi.model.OWLEntity;
 
 public class DifferenceList extends JPanel implements Disposable {
 	private static final long serialVersionUID = -3297368551819068585L;
+	
+	private OWLEditorKit editorKit;
 	
 	private DifferenceManager diffs;
 	private DifferenceTableModel diffModel;
@@ -43,7 +46,7 @@ public class DifferenceList extends JPanel implements Disposable {
 	private DifferenceListener diffListener = new DifferenceListener() {
 		public void statusChanged(DifferenceEvent event) {
 			if (event == DifferenceEvent.DIFF_COMPLETED) {
-				renderer = RenderingService.get(diffs.getEngine());
+				renderer = StartDiff.getRenderingService(editorKit.getModelManager());
 				fillEntityBasedDiffList();
 			}
 			else if (event == DifferenceEvent.DIFF_RESET) {
@@ -74,11 +77,10 @@ public class DifferenceList extends JPanel implements Disposable {
 	};
 
 	public DifferenceList(OWLEditorKit editorKit) {
+		this.editorKit = editorKit;
 		setLayout(new BorderLayout());
 		this.diffs = DifferenceManager.get(editorKit.getModelManager());
-		if (diffs.getEngine() != null) {
-			renderer = RenderingService.get(diffs.getEngine());
-		}
+		renderer = StartDiff.getRenderingService(editorKit.getModelManager());
 		add(createDifferenceListComponent(), BorderLayout.WEST);
 		add(createDifferenceTable(), BorderLayout.CENTER);
 		if (diffs.isReady()) {
