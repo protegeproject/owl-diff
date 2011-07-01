@@ -67,12 +67,12 @@ public class DifferenceManager implements Disposable {
 		LOGGER.info("Starting Difference calculation...");
 		engine = new Engine(manager.getOWLDataFactory(), baselineOntology, workspaceOntology);
 		configuration.configure(engine);
-		setupRendering(engine, manager.getOWLDataFactory(), baselineOntology, workspaceOntology);
 		engine.phase1();
 		stopWatch.measure();
 		LOGGER.info("Calculating presentation...");
 		engine.phase2();
 		stopWatch.finish();
+		setupRendering(engine, manager.getOWLDataFactory(), baselineOntology, workspaceOntology);
 		fireStatusChanged(DifferenceEvent.DIFF_COMPLETED);
 	}
 	
