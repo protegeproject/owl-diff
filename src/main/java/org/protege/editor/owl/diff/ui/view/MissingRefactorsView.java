@@ -101,7 +101,7 @@ public class MissingRefactorsView extends AbstractOWLViewComponent {
 	
 	private void refill() {
 		if (differenceManager.isReady()) {
-			renderer = RenderingService.get(differenceManager.getEngine());
+			renderer = StartDiff.getRenderingService(getOWLModelManager());
 			createdList.removeAll();
 			createdList.setCellRenderer(new EntityBasedDiffRenderer(renderer));
 			deletedList.removeAll();
