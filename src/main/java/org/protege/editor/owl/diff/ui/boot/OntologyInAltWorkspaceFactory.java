@@ -61,7 +61,7 @@ public class OntologyInAltWorkspaceFactory implements Disposable {
 		return altEditorKit;
 	}
 	
-	public void dispose() throws Exception {
+	public void dispose() {
 		eKit = null;
 		altEditorKit = null;
 	}

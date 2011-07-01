@@ -48,7 +48,7 @@ public class MissingRefactorsView extends AbstractOWLViewComponent {
 	};
 	
 	@Override
-	protected void initialiseOWLView() throws Exception {
+	protected void initialiseOWLView() {
 		differenceManager = DifferenceManager.get(getOWLModelManager());
 		differenceManager.addDifferenceListener(listener);
 		createUI();

@@ -40,11 +40,11 @@ public class StartDiff extends ProtegeOWLAction {
 	
 	
 
-	public void initialise() throws Exception {
+	public void initialise() {
 	}
 
 	
-	public void dispose() throws Exception {
+	public void dispose() {
 
 	}
 
@@ -61,44 +61,48 @@ public class StartDiff extends ProtegeOWLAction {
 			new Thread(new Runnable() {
 				
 				public void run() {
-					try {
-						monitor.setNote("Loading ontology for comparison");
-						OWLOntology baselineOntology;
-						OntologyInAltWorkspaceFactory factory = null;
-						if (loadInSeparateWorkspace) {
-							factory = new OntologyInAltWorkspaceFactory(getOWLEditorKit());
-							baselineOntology = factory.loadInSeparateSynchronizedWorkspace(IRI.create(f));
-						}
-						else {
-							OWLOntologyLoaderConfiguration configuration = new OWLOntologyLoaderConfiguration();
-							configuration.setSilentMissingImportsHandling(true);
-							OWLOntologyManager baselineManager = OWLManager.createOWLOntologyManager();
-							baselineOntology = baselineManager.loadOntologyFromOntologyDocument(new FileDocumentSource(f), configuration);
-						}
-						monitor.setProgress(1);
-						
-						monitor.setNote("Calculating differences");
-						DifferenceManager diffs = DifferenceManager.get(getOWLModelManager());
-						diffs.run(baselineOntology, configuration);
-						monitor.setProgress(2);
-						if (loadInSeparateWorkspace) {
-							SynchronizeDifferenceListener.synchronize(diffs, factory.getAltEditorKit(), false);
-							diffs.getEngine().addService(factory);
-						}
-						SynchronizeDifferenceListener.synchronize(diffs, getOWLEditorKit(), true);
-						
-						selectTab();
-					}
-					catch (Throwable t) {
-						ProtegeApplication.getErrorLog().logError(t);
-					}
-					finally {
-						monitor.close();
-					}
+					calculateDiffs(f, configuration, monitor, loadInSeparateWorkspace);
 				}
 			}).start();
 		}
 
+	}
+	
+	private void calculateDiffs(File baselineOntologyLocation, Configuration configuration, ProgressMonitor monitor, boolean loadInSeparateWorkspace) {
+		try {
+			monitor.setNote("Loading ontology for comparison");
+			OWLOntology baselineOntology;
+			OntologyInAltWorkspaceFactory factory = null;
+			if (loadInSeparateWorkspace) {
+				factory = new OntologyInAltWorkspaceFactory(getOWLEditorKit());
+				baselineOntology = factory.loadInSeparateSynchronizedWorkspace(IRI.create(baselineOntologyLocation));
+			}
+			else {
+				OWLOntologyLoaderConfiguration ontologyLoaderConfig = new OWLOntologyLoaderConfiguration();
+				ontologyLoaderConfig.setSilentMissingImportsHandling(true);
+				OWLOntologyManager baselineManager = OWLManager.createOWLOntologyManager();
+				baselineOntology = baselineManager.loadOntologyFromOntologyDocument(new FileDocumentSource(baselineOntologyLocation), ontologyLoaderConfig);
+			}
+			monitor.setProgress(1);
+			
+			monitor.setNote("Calculating differences");
+			DifferenceManager diffs = DifferenceManager.get(getOWLModelManager());
+			diffs.run(baselineOntology, configuration);
+			monitor.setProgress(2);
+			if (loadInSeparateWorkspace) {
+				SynchronizeDifferenceListener.synchronize(diffs, factory.getAltEditorKit(), false);
+				diffs.getEngine().addService(factory);
+			}
+			SynchronizeDifferenceListener.synchronize(diffs, getOWLEditorKit(), true);
+			
+			selectTab();
+		}
+		catch (Throwable t) {
+			ProtegeApplication.getErrorLog().logError(t);
+		}
+		finally {
+			monitor.close();
+		}
 	}
 	
 	

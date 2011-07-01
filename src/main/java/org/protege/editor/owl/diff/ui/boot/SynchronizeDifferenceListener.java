@@ -47,7 +47,7 @@ public class SynchronizeDifferenceListener implements DifferenceListener, Dispos
 		}
 	}
 	
-	public void dispose() throws Exception {
+	public void dispose() {
 		differenceManager.removeDifferenceListener(this);  // twice is ok. minor memory leak.
 	}
 }

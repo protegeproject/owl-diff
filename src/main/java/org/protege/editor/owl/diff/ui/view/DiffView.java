@@ -30,7 +30,7 @@ public class DiffView extends AbstractOWLViewComponent {
 		
 	};
 	
-	protected void initialiseOWLView() throws Exception {
+	protected void initialiseOWLView() {
 		setLayout(new BorderLayout());
 
 		view = new DifferenceList(getOWLEditorKit());
