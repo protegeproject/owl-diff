@@ -32,6 +32,7 @@ import org.protege.editor.owl.model.OWLModelManager;
 import org.protege.editor.owl.ui.UIHelper;
 import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
+import org.protege.owl.diff.align.algorithms.DeferDeprecationAlgorithm;
 import org.protege.owl.diff.align.algorithms.MatchByCode;
 import org.protege.owl.diff.align.algorithms.MatchById;
 import org.protege.owl.diff.align.algorithms.MatchByIdFragment;
@@ -44,6 +45,7 @@ import org.protege.owl.diff.present.algorithms.IdentifyAxiomAnnotationChanged;
 import org.protege.owl.diff.present.algorithms.IdentifyChangedAnnotation;
 import org.protege.owl.diff.present.algorithms.IdentifyChangedDefinition;
 import org.protege.owl.diff.present.algorithms.IdentifyChangedSuperclass;
+import org.protege.owl.diff.present.algorithms.IdentifyDeprecatedAndReplaced;
 import org.protege.owl.diff.present.algorithms.IdentifyRenameOperation;
 import org.protege.owl.diff.service.CodeToEntityMapper;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
@@ -87,7 +89,8 @@ public class ConfigureDifferenceRun extends JDialog {
 				new MatchById(), new MatchByCode(), new MatchStandardVocabulary(),
 				new MatchByIdFragment(), new MatchSiblingsWithSimilarIds(),
 				new SuperSubClassPinch(),
-				new MatchLoneSiblings()
+				new MatchLoneSiblings(),
+				new DeferDeprecationAlgorithm()
 		};
 		AlignmentAggressiveness effort = (AlignmentAggressiveness) aggressiveness.getSelectedItem();
 		for (AlignmentAlgorithm alg : allAlignmentAlgorithms) {
@@ -101,6 +104,7 @@ public class ConfigureDifferenceRun extends JDialog {
 		config.addPresentationAlgorithm(IdentifyChangedSuperclass.class);
 		config.addPresentationAlgorithm(IdentifyRenameOperation.class);
 		config.addPresentationAlgorithm(IdentifyAxiomAnnotationChanged.class);
+		config.addPresentationAlgorithm(IdentifyDeprecatedAndReplaced.class);
 		
 		return config;
 	}
