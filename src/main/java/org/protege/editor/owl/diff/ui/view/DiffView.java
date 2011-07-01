@@ -17,7 +17,7 @@ import org.semanticweb.owlapi.model.OWLEntity;
 
 public class DiffView extends AbstractOWLViewComponent {
 	private static final long serialVersionUID = -953820310817783007L;
-	public static Logger LOGGER = Logger.getLogger(DiffView.class);
+	public static final Logger LOGGER = Logger.getLogger(DiffView.class);
 	
 	private DifferenceList view;
 	private JLabel status;

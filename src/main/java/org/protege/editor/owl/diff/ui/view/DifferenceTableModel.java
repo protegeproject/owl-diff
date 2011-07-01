@@ -6,7 +6,6 @@ import java.util.SortedSet;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.protege.editor.owl.model.OWLModelManager;
 import org.protege.owl.diff.present.MatchedAxiom;
 import org.protege.owl.diff.service.RenderingService;
 import org.semanticweb.owlapi.model.OWLAxiom;

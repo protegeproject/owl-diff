@@ -2,10 +2,6 @@ package org.protege.editor.owl.diff.ui.boot;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.swing.ProgressMonitor;
 
@@ -14,27 +10,19 @@ import org.protege.editor.core.ui.workspace.WorkspaceTab;
 import org.protege.editor.core.ui.workspace.WorkspaceTabPlugin;
 import org.protege.editor.core.ui.workspace.WorkspaceTabPluginLoader;
 import org.protege.editor.owl.OWLEditorKit;
-import org.protege.editor.owl.diff.model.DifferenceEvent;
-import org.protege.editor.owl.diff.model.DifferenceListener;
 import org.protege.editor.owl.diff.model.DifferenceManager;
 import org.protege.editor.owl.model.OWLModelManager;
 import org.protege.editor.owl.model.OWLWorkspace;
 import org.protege.editor.owl.ui.action.ProtegeOWLAction;
-import org.protege.editor.owl.ui.renderer.OWLRendererPreferences;
 import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.conf.Configuration;
 import org.protege.owl.diff.service.RenderingService;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.FileDocumentSource;
 import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLAnnotationProperty;
-import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyLoaderConfiguration;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.semanticweb.owlapi.model.OWLOntologySetProvider;
-import org.semanticweb.owlapi.util.AnnotationValueShortFormProvider;
-import org.semanticweb.owlapi.util.OWLOntologyImportsClosureSetProvider;
 
 
 public class StartDiff extends ProtegeOWLAction {

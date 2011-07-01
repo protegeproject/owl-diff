@@ -13,7 +13,6 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
