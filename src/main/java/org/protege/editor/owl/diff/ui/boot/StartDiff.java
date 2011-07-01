@@ -14,12 +14,14 @@ import org.protege.editor.core.ui.workspace.WorkspaceTab;
 import org.protege.editor.core.ui.workspace.WorkspaceTabPlugin;
 import org.protege.editor.core.ui.workspace.WorkspaceTabPluginLoader;
 import org.protege.editor.owl.OWLEditorKit;
+import org.protege.editor.owl.diff.model.DifferenceEvent;
+import org.protege.editor.owl.diff.model.DifferenceListener;
 import org.protege.editor.owl.diff.model.DifferenceManager;
+import org.protege.editor.owl.model.OWLModelManager;
 import org.protege.editor.owl.model.OWLWorkspace;
 import org.protege.editor.owl.ui.action.ProtegeOWLAction;
 import org.protege.editor.owl.ui.renderer.OWLRendererPreferences;
 import org.protege.owl.diff.Engine;
-import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.conf.Configuration;
 import org.protege.owl.diff.service.RenderingService;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -38,13 +40,19 @@ import org.semanticweb.owlapi.util.OWLOntologyImportsClosureSetProvider;
 public class StartDiff extends ProtegeOWLAction {
 	private static final long serialVersionUID = -5400122637724517976L;
 
+	public static RenderingService getRenderingService(OWLModelManager modelManager) {
+		DifferenceManager differenceManager = DifferenceManager.get(modelManager);
+		return RenderingService.get(differenceManager.getEngine());
+	}
+	
 	public static OWLEditorKit getAltEditorKit(Engine e) {
 		OntologyInAltWorkspaceFactory factory = e.getService(OntologyInAltWorkspaceFactory.class);
 		return factory != null ? factory.getAltEditorKit() : null;
 	}
+	
+	
 
 	public void initialise() throws Exception {
-
 	}
 
 	
@@ -90,7 +98,6 @@ public class StartDiff extends ProtegeOWLAction {
 							diffs.getEngine().addService(factory);
 						}
 						SynchronizeDifferenceListener.synchronize(diffs, getOWLEditorKit(), true);
-						setupRendering(diffs);
 						
 						selectTab();
 					}
@@ -106,29 +113,6 @@ public class StartDiff extends ProtegeOWLAction {
 
 	}
 	
-	private void setupRendering(DifferenceManager diffs) {
-		Engine e = diffs.getEngine();
-		OwlDiffMap diffMap = e.getOwlDiffMap();
-		OWLDataFactory factory = e.getOWLDataFactory();
-		RenderingService renderer = RenderingService.get(e);
-		OWLRendererPreferences preferences = OWLRendererPreferences.getInstance();
-		List<String> langs = preferences.getAnnotationLangs();
-		Map<OWLAnnotationProperty, List<String>> langMap = new HashMap<OWLAnnotationProperty, List<String>>();
-		List<OWLAnnotationProperty> annotationProperties = new ArrayList<OWLAnnotationProperty>();
-		for (IRI iri : preferences.getAnnotationIRIs()) {
-			OWLAnnotationProperty annotationProperty = factory.getOWLAnnotationProperty(iri);
-			annotationProperties.add(annotationProperty);
-			langMap.put(annotationProperty, langs);
-		}
-		
-		OWLOntology sourceOntology = diffMap.getSourceOntology();
-		OWLOntologySetProvider sourceOntologies = new OWLOntologyImportsClosureSetProvider(sourceOntology.getOWLOntologyManager(), sourceOntology);
-		renderer.setSourceShortFormProvider(new AnnotationValueShortFormProvider(annotationProperties, langMap, sourceOntologies));
-		
-		OWLOntology targetOntology = diffMap.getTargetOntology();
-		OWLOntologySetProvider targetOntologies = new OWLOntologyImportsClosureSetProvider(targetOntology.getOWLOntologyManager(), targetOntology);
-		renderer.setTargetShortFormProvider(new AnnotationValueShortFormProvider(annotationProperties, langMap, targetOntologies));
-	}
 	
 	private void selectTab() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
 		String tabId = "org.protege.editor.owl.diff.DifferenceTable";
