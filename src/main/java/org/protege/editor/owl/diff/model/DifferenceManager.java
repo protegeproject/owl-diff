@@ -1,6 +1,7 @@
 package org.protege.editor.owl.diff.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -8,15 +9,24 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.protege.editor.core.Disposable;
+import org.protege.editor.core.ProtegeApplication;
 import org.protege.editor.owl.model.OWLModelManager;
+import org.protege.editor.owl.ui.renderer.OWLRendererPreferences;
 import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.conf.Configuration;
 import org.protege.owl.diff.present.EntityBasedDiff;
 import org.protege.owl.diff.present.PresentationAlgorithm;
+import org.protege.owl.diff.service.RenderingService;
 import org.protege.owl.diff.util.StopWatch;
+import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAnnotationProperty;
+import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologySetProvider;
+import org.semanticweb.owlapi.util.AnnotationValueShortFormProvider;
+import org.semanticweb.owlapi.util.OWLOntologyImportsClosureSetProvider;
 
 public class DifferenceManager implements Disposable {
 	public static final String ID = DifferenceManager.class.getCanonicalName();
@@ -57,12 +67,32 @@ public class DifferenceManager implements Disposable {
 		LOGGER.info("Starting Difference calculation...");
 		engine = new Engine(manager.getOWLDataFactory(), baselineOntology, workspaceOntology);
 		configuration.configure(engine);
+		setupRendering(engine, manager.getOWLDataFactory(), baselineOntology, workspaceOntology);
 		engine.phase1();
 		stopWatch.measure();
 		LOGGER.info("Calculating presentation...");
 		engine.phase2();
 		stopWatch.finish();
 		fireStatusChanged(DifferenceEvent.DIFF_COMPLETED);
+	}
+	
+	private void setupRendering(Engine e, OWLDataFactory factory, OWLOntology sourceOntology, OWLOntology targetOntology) {
+		RenderingService renderer = RenderingService.get(e);
+		OWLRendererPreferences preferences = OWLRendererPreferences.getInstance();
+		List<String> langs = preferences.getAnnotationLangs();
+		Map<OWLAnnotationProperty, List<String>> langMap = new HashMap<OWLAnnotationProperty, List<String>>();
+		List<OWLAnnotationProperty> annotationProperties = new ArrayList<OWLAnnotationProperty>();
+		for (IRI iri : preferences.getAnnotationIRIs()) {
+			OWLAnnotationProperty annotationProperty = factory.getOWLAnnotationProperty(iri);
+			annotationProperties.add(annotationProperty);
+			langMap.put(annotationProperty, langs);
+		}
+		
+		OWLOntologySetProvider sourceOntologies = new OWLOntologyImportsClosureSetProvider(sourceOntology.getOWLOntologyManager(), sourceOntology);
+		renderer.setSourceShortFormProvider(new AnnotationValueShortFormProvider(annotationProperties, langMap, sourceOntologies));
+		
+		OWLOntologySetProvider targetOntologies = new OWLOntologyImportsClosureSetProvider(targetOntology.getOWLOntologyManager(), targetOntology);
+		renderer.setTargetShortFormProvider(new AnnotationValueShortFormProvider(annotationProperties, langMap, targetOntologies));
 	}
 	
 	/* TODO - set  with preferences and presets */
@@ -123,7 +153,12 @@ public class DifferenceManager implements Disposable {
 	
 	private void fireStatusChanged(DifferenceEvent event) {
 		for (DifferenceListener listener : new ArrayList<DifferenceListener>(listeners)) {
-			listener.statusChanged(event);
+			try {
+				listener.statusChanged(event);
+			}
+			catch (Exception e) {
+				ProtegeApplication.getErrorLog().logError(e);
+			}
 		}
 	}
 	
