@@ -43,6 +43,8 @@ public class DifferenceList extends JPanel implements Disposable {
 	private JList entityBasedDiffList;
 	private JLabel explanationLabel;
 	
+	private boolean synchronizing = true;
+	
 	private DifferenceListener diffListener = new DifferenceListener() {
 		public void statusChanged(DifferenceEvent event) {
 			if (event == DifferenceEvent.DIFF_COMPLETED) {
@@ -53,7 +55,7 @@ public class DifferenceList extends JPanel implements Disposable {
 				entityBasedDiffList.removeAll();
 				diffModel.clear();
 			}
-			else if (event == DifferenceEvent.SELECTION_CHANGED) {
+			else if (event == DifferenceEvent.SELECTION_CHANGED && isSynchronizing()) {
 				selectionChanged();
 			}
 		}
@@ -89,6 +91,14 @@ public class DifferenceList extends JPanel implements Disposable {
 		diffs.addDifferenceListener(diffListener);
 	}
 	
+	public boolean isSynchronizing() {
+		return synchronizing;
+	}
+	
+	public void setSynchronizing(boolean synchronizing) {
+		this.synchronizing = synchronizing;
+	}
+	
 	private void fillEntityBasedDiffList() {
 		Changes changes = diffs.getEngine().getChanges();
 		DefaultListModel model = (DefaultListModel) entityBasedDiffList.getModel();
@@ -114,9 +124,11 @@ public class DifferenceList extends JPanel implements Disposable {
 		entityBasedDiffList.addListSelectionListener(new ListSelectionListener() {
 
 			public void valueChanged(ListSelectionEvent e) {
-				Object o = entityBasedDiffList.getSelectedValue();
-				if (o instanceof EntityBasedDiff) {
-					diffs.setSelection((EntityBasedDiff) o);
+				if (isSynchronizing()) {
+					Object o = entityBasedDiffList.getSelectedValue();
+					if (o instanceof EntityBasedDiff) {
+						diffs.setSelection((EntityBasedDiff) o);
+					}
 				}
 			}
 		});

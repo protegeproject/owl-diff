@@ -33,7 +33,17 @@ public class DiffView extends AbstractOWLViewComponent {
 	protected void initialiseOWLView() {
 		setLayout(new BorderLayout());
 
-		view = new DifferenceList(getOWLEditorKit());
+		view = new DifferenceList(getOWLEditorKit()) {
+			private static final long serialVersionUID = -88036681191093269L;
+
+			public boolean isSynchronizing() {
+				return DiffView.this.isSynchronizing();
+			}
+			
+			public void setSynchronizing(boolean isSynchronized) {
+				throw new UnsupportedOperationException();
+			}
+		};
 		add(view, BorderLayout.CENTER);
 		
 		status = new JLabel();
