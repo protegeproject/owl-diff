@@ -36,3 +36,5 @@ Import-Package: javax.swing,
 Export-Package: org.protege.editor.owl.diff.model,
  org.protege.editor.owl.diff.ui.boot,
  org.protege.editor.owl.diff.ui.view
+
+

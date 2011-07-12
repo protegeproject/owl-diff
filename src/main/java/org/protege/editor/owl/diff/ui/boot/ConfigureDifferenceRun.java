@@ -26,26 +26,16 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
+import org.protege.editor.core.ProtegeApplication;
 import org.protege.editor.owl.OWLEditorKit;
+import org.protege.editor.owl.diff.DifferenceActivator;
 import org.protege.editor.owl.model.OWLModelManager;
 import org.protege.editor.owl.ui.UIHelper;
 import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.algorithms.DeferDeprecationAlgorithm;
-import org.protege.owl.diff.align.algorithms.MatchByCode;
-import org.protege.owl.diff.align.algorithms.MatchById;
-import org.protege.owl.diff.align.algorithms.MatchByIdFragment;
-import org.protege.owl.diff.align.algorithms.MatchLoneSiblings;
-import org.protege.owl.diff.align.algorithms.MatchSiblingsWithSimilarIds;
-import org.protege.owl.diff.align.algorithms.MatchStandardVocabulary;
-import org.protege.owl.diff.align.algorithms.SuperSubClassPinch;
 import org.protege.owl.diff.conf.Configuration;
-import org.protege.owl.diff.present.algorithms.IdentifyAxiomAnnotationChanged;
-import org.protege.owl.diff.present.algorithms.IdentifyChangedAnnotation;
-import org.protege.owl.diff.present.algorithms.IdentifyChangedDefinition;
-import org.protege.owl.diff.present.algorithms.IdentifyChangedSuperclass;
-import org.protege.owl.diff.present.algorithms.IdentifyDeprecatedAndReplaced;
-import org.protege.owl.diff.present.algorithms.IdentifyRenameOperation;
+import org.protege.owl.diff.present.PresentationAlgorithm;
 import org.protege.owl.diff.service.CodeToEntityMapper;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -55,6 +45,7 @@ public class ConfigureDifferenceRun extends JDialog {
 	private OWLEditorKit eKit;
 	private File baseline;
 	private JCheckBox openBaselineInSeparateWindow;
+	private JCheckBox doDeprecationAndReplace;
 	private JComboBox aggressiveness;
 	private JCheckBox useLabel;
 	private JComboBox labelBox;
@@ -84,26 +75,23 @@ public class ConfigureDifferenceRun extends JDialog {
 		if (useLabel.isSelected()) {
 			config.put(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, ((OWLAnnotationProperty) labelBox.getSelectedItem()).toString());
 		}
-		AlignmentAlgorithm allAlignmentAlgorithms[] = {   // improve...
-				new MatchById(), new MatchByCode(), new MatchStandardVocabulary(),
-				new MatchByIdFragment(), new MatchSiblingsWithSimilarIds(),
-				new SuperSubClassPinch(),
-				new MatchLoneSiblings(),
-				new DeferDeprecationAlgorithm()
-		};
 		AlignmentAggressiveness effort = (AlignmentAggressiveness) aggressiveness.getSelectedItem();
-		for (AlignmentAlgorithm alg : allAlignmentAlgorithms) {
-			if (alg.getAggressiveness().compareTo(effort) <= 0) {
-				config.addAlignmentAlgorithm(alg.getClass());
+		for (Class<? extends AlignmentAlgorithm> alg : DifferenceActivator.createAlignmentAlgorithms()) {
+			try {
+				if (alg.newInstance().getAggressiveness().compareTo(effort) <= 0) {
+					config.addAlignmentAlgorithm(alg);
+				}
+			}
+			catch (Exception e) {
+				ProtegeApplication.getErrorLog().logError(e);
 			}
 		}
-		
-		config.addPresentationAlgorithm(IdentifyChangedAnnotation.class);
-		config.addPresentationAlgorithm(IdentifyChangedDefinition.class);
-		config.addPresentationAlgorithm(IdentifyChangedSuperclass.class);
-		config.addPresentationAlgorithm(IdentifyRenameOperation.class);
-		config.addPresentationAlgorithm(IdentifyAxiomAnnotationChanged.class);
-		config.addPresentationAlgorithm(IdentifyDeprecatedAndReplaced.class);
+		if (doDeprecationAndReplace.isSelected()) {
+			config.addAlignmentAlgorithm(DeferDeprecationAlgorithm.class);
+		}
+		for (Class<? extends PresentationAlgorithm> alg : DifferenceActivator.createPresentationAlgorithms()) {
+			config.addPresentationAlgorithm(alg);
+		}
 		
 		return config;
 	}
@@ -111,8 +99,11 @@ public class ConfigureDifferenceRun extends JDialog {
 	
 	private void createGui() {
 		setLayout(new BorderLayout());
+		
 		addCenterPanel();
 		addButtons();
+		
+		updateDeprecateAndReplaceStatus();
 	}
 	
 	/*
@@ -126,6 +117,7 @@ public class ConfigureDifferenceRun extends JDialog {
 		centerPanel.setAlignmentY(LEFT_ALIGNMENT);
 		centerPanel.add(createFilePanel());
 		centerPanel.add(createOpenInSeparateWorkspace());
+		centerPanel.add(createDeprecateAndReplace());
 		centerPanel.add(createAlignByLabelComponent());
 		centerPanel.add(chooseAggressivenessDropdown());
 		add(centerPanel, BorderLayout.CENTER);
@@ -156,6 +148,15 @@ public class ConfigureDifferenceRun extends JDialog {
 			}
 		});
 		panel.setAlignmentY(LEFT_ALIGNMENT);
+		return panel;
+	}
+	
+	private JComponent createDeprecateAndReplace() {
+		JPanel panel = new JPanel(new FlowLayout());
+		panel.setAlignmentY(LEFT_ALIGNMENT);
+		doDeprecationAndReplace = new JCheckBox("Search for the deprecate and replace pattern");
+		doDeprecationAndReplace.setAlignmentY(LEFT_ALIGNMENT);
+		panel.add(doDeprecationAndReplace);
 		return panel;
 	}
 	
@@ -224,7 +225,17 @@ public class ConfigureDifferenceRun extends JDialog {
 		aggressiveness.setSelectedItem(AlignmentAggressiveness.IGNORE_REFACTOR);
 		aggressiveness.setAlignmentY(LEFT_ALIGNMENT);
 		panel.add(aggressiveness);
+		aggressiveness.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				updateDeprecateAndReplaceStatus();
+			}
+		});
 		return panel;
+	}
+	
+	private void updateDeprecateAndReplaceStatus() {
+		doDeprecationAndReplace.setEnabled(aggressiveness.getSelectedItem() != AlignmentAggressiveness.IGNORE_REFACTOR);
 	}
 	
 	
