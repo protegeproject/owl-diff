@@ -73,7 +73,7 @@ public class ConfigureDifferenceRun extends JDialog {
 	public Configuration getConfiguration() {
 		Configuration config = new Configuration();
 		if (useLabel.isSelected()) {
-			config.put(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, ((OWLAnnotationProperty) labelBox.getSelectedItem()).toString());
+			config.put(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, ((OWLAnnotationProperty) labelBox.getSelectedItem()).getIRI().toString());
 		}
 		AlignmentAggressiveness effort = (AlignmentAggressiveness) aggressiveness.getSelectedItem();
 		for (Class<? extends AlignmentAlgorithm> alg : DifferenceActivator.createAlignmentAlgorithms()) {
