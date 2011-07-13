@@ -13,6 +13,7 @@ import org.protege.editor.owl.ui.view.AbstractOWLViewComponent;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.present.Changes;
 import org.protege.owl.diff.present.EntityBasedDiff;
+import org.protege.owl.diff.util.Util;
 import org.semanticweb.owlapi.model.OWLEntity;
 
 public class DiffView extends AbstractOWLViewComponent {
@@ -69,32 +70,9 @@ public class DiffView extends AbstractOWLViewComponent {
 	private void updateStatus() {
 		DifferenceManager diffs = DifferenceManager.get(getOWLModelManager());
 		if (diffs.isReady()) {
-			OwlDiffMap diffMap = diffs.getEngine().getOwlDiffMap();
 			StringBuffer sb = new StringBuffer();
 			sb.append("Displaying differences.  ");
-			sb.append(diffMap.getUnmatchedTargetEntities().size());
-			sb.append(" entities created, ");
-			sb.append(diffMap.getUnmatchedSourceEntities().size());
-			sb.append(" entities deleted, ");
-			int refactored = 0;
-			int otherwiseChanged = 0;
-			Changes changes = diffs.getEngine().getChanges();
-			for (EntityBasedDiff diff : changes.getEntityBasedDiffs()) {
-				OWLEntity sourceEntity = diff.getSourceEntity();
-				OWLEntity targetEntity = diff.getTargetEntity();
-				if (sourceEntity != null && targetEntity != null) {
-					if (!sourceEntity.getIRI().equals(targetEntity.getIRI())) {
-						refactored++;
-					}
-					else {
-						otherwiseChanged++;
-					}
-				}
-			}
-			sb.append(refactored);
-			sb.append(" entities renamed, ");
-			sb.append(otherwiseChanged);
-			sb.append(" entities otherwise altered.");
+			sb.append(Util.getStats(diffs.getEngine()));
 			status.setText(sb.toString());
 		}
 		else {

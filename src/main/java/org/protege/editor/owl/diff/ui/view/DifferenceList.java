@@ -56,11 +56,11 @@ public class DifferenceList extends JPanel implements Disposable {
 				diffModel.clear();
 			}
 			else if (event == DifferenceEvent.SELECTION_CHANGED && isSynchronizing()) {
-				selectionChanged();
+				globalDiffSelectionChanged();
 			}
 		}
 		
-		private void selectionChanged() {
+		private void globalDiffSelectionChanged() {
 			explanationLabel.setText("");
 			EntityBasedDiff diff = diffs.getSelection();
 			if (diff != null) {
@@ -124,10 +124,14 @@ public class DifferenceList extends JPanel implements Disposable {
 		entityBasedDiffList.addListSelectionListener(new ListSelectionListener() {
 
 			public void valueChanged(ListSelectionEvent e) {
-				if (isSynchronizing()) {
-					Object o = entityBasedDiffList.getSelectedValue();
-					if (o instanceof EntityBasedDiff) {
-						diffs.setSelection((EntityBasedDiff) o);
+				Object o = entityBasedDiffList.getSelectedValue();
+				if (o instanceof EntityBasedDiff) {
+					EntityBasedDiff diff = (EntityBasedDiff) o;
+					if (isSynchronizing()) {
+						diffs.setSelection(diff);
+					}
+					else {
+						diffModel.setMatches(diff.getAxiomMatches());
 					}
 				}
 			}
