@@ -37,13 +37,14 @@ import org.protege.owl.diff.align.algorithms.DeferDeprecationAlgorithm;
 import org.protege.owl.diff.conf.Configuration;
 import org.protege.owl.diff.present.PresentationAlgorithm;
 import org.protege.owl.diff.service.CodeToEntityMapper;
+import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
 
 public class ConfigureDifferenceRun extends JDialog {
 	private static final long serialVersionUID = -2882654202196117453L;
 	private OWLEditorKit eKit;
-	private File baseline;
+	private JTextField baselineTextField;
 	private JCheckBox openBaselineInSeparateWindow;
 	private JCheckBox doDeprecationAndReplace;
 	private JComboBox aggressiveness;
@@ -58,8 +59,13 @@ public class ConfigureDifferenceRun extends JDialog {
 		pack();
 	}
 	
-	public File getBaseline() {
-		return baseline;
+	public IRI getBaseline() {
+		String baseline = baselineTextField.getText();
+		File baselineFile = new File(baseline);
+		if (baselineFile.exists()) {
+			return IRI.create(baselineFile);
+		}
+		return IRI.create(baseline);
 	}
 
 	public boolean getOpenBaselineInSeparateWindow() {
@@ -126,13 +132,14 @@ public class ConfigureDifferenceRun extends JDialog {
 	private JPanel createFilePanel() {
 		JPanel panel = new JPanel(new FlowLayout());
 		panel.setAlignmentY(LEFT_ALIGNMENT);
-		JLabel label = new JLabel("Original Version of the file: ");
+		JLabel label = new JLabel("Original Version: ");
 		label.setAlignmentY(LEFT_ALIGNMENT);
 		panel.add(label);
-		final JTextField baselineTextField = new JTextField();
+		baselineTextField = new JTextField();
+		baselineTextField.setEditable(true);
 		Dimension preferredTextFieldDimension = new JTextField("Thesaurus-101129-10.11e.owl").getPreferredSize();
 		baselineTextField.setPreferredSize(preferredTextFieldDimension);
-		baselineTextField.setEditable(false);
+		baselineTextField.setEditable(true);
 		panel.add(baselineTextField);
 		JButton browseForBaseline = new JButton("Browse");
 		panel.add(browseForBaseline);
@@ -142,8 +149,7 @@ public class ConfigureDifferenceRun extends JDialog {
 				UIHelper utility = new UIHelper(eKit);
 				File f = utility.chooseOWLFile("Choose the baseline ontology");
 				if (f != null) {
-					baseline = f;
-					baselineTextField.setText(f.getName());
+					baselineTextField.setText(f.getAbsolutePath());
 				}
 			}
 		});
