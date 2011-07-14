@@ -1,7 +1,6 @@
 package org.protege.editor.owl.diff.ui.boot;
 
 import java.awt.event.ActionEvent;
-import java.io.File;
 
 import javax.swing.ProgressMonitor;
 
@@ -18,7 +17,7 @@ import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.conf.Configuration;
 import org.protege.owl.diff.service.RenderingService;
 import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.io.FileDocumentSource;
+import org.semanticweb.owlapi.io.IRIDocumentSource;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyLoaderConfiguration;
@@ -52,7 +51,7 @@ public class StartDiff extends ProtegeOWLAction {
 	public void actionPerformed(ActionEvent e) {
 		ConfigureDifferenceRun confWindow = new ConfigureDifferenceRun(getOWLEditorKit());
 		confWindow.setVisible(true);
-		final File f = confWindow.getBaseline();
+		final IRI f = confWindow.getBaseline();
 		final boolean loadInSeparateWorkspace = confWindow.getOpenBaselineInSeparateWindow();
 		final Configuration configuration = confWindow.getConfiguration();
 		if (confWindow.isCommit() && f != null) {
@@ -68,20 +67,20 @@ public class StartDiff extends ProtegeOWLAction {
 
 	}
 	
-	private void calculateDiffs(File baselineOntologyLocation, Configuration configuration, ProgressMonitor monitor, boolean loadInSeparateWorkspace) {
+	private void calculateDiffs(IRI baselineOntologyLocation, Configuration configuration, ProgressMonitor monitor, boolean loadInSeparateWorkspace) {
 		try {
 			monitor.setNote("Loading ontology for comparison");
 			OWLOntology baselineOntology;
 			OntologyInAltWorkspaceFactory factory = null;
 			if (loadInSeparateWorkspace) {
 				factory = new OntologyInAltWorkspaceFactory(getOWLEditorKit());
-				baselineOntology = factory.loadInSeparateSynchronizedWorkspace(IRI.create(baselineOntologyLocation));
+				baselineOntology = factory.loadInSeparateSynchronizedWorkspace(baselineOntologyLocation);
 			}
 			else {
 				OWLOntologyLoaderConfiguration ontologyLoaderConfig = new OWLOntologyLoaderConfiguration();
 				ontologyLoaderConfig.setSilentMissingImportsHandling(true);
 				OWLOntologyManager baselineManager = OWLManager.createOWLOntologyManager();
-				baselineOntology = baselineManager.loadOntologyFromOntologyDocument(new FileDocumentSource(baselineOntologyLocation), ontologyLoaderConfig);
+				baselineOntology = baselineManager.loadOntologyFromOntologyDocument(new IRIDocumentSource(baselineOntologyLocation), ontologyLoaderConfig);
 			}
 			monitor.setProgress(1);
 			
