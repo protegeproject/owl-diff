@@ -60,7 +60,9 @@ public class DiffView extends AbstractOWLViewComponent {
 		DifferenceManager diffs = DifferenceManager.get(getOWLModelManager());
 		diffs.removeDifferenceListener(listener);
 		try {
-			view.dispose();
+			if (view != null) {
+				view.dispose();
+			}
 		}
 		catch (Exception e) {
 			ProtegeApplication.getErrorLog().logError(e);
