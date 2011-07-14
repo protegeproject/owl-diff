@@ -2,6 +2,9 @@ package org.protege.editor.owl.diff.ui.view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -9,12 +12,14 @@ import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
+import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -28,6 +33,7 @@ import org.protege.editor.owl.diff.ui.boot.StartDiff;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.present.Changes;
 import org.protege.owl.diff.present.EntityBasedDiff;
+import org.protege.owl.diff.present.algorithms.IdentifyDeprecatedAndReplaced;
 import org.protege.owl.diff.service.RenderingService;
 import org.semanticweb.owlapi.model.OWLEntity;
 
@@ -40,8 +46,9 @@ public class DifferenceList extends JPanel implements Disposable {
 	private DifferenceTableModel diffModel;
 	private RenderingService renderer;
 	
-	private JList entityBasedDiffList;
-	private JLabel explanationLabel;
+	private JList  entityBasedDiffList;
+	private JPanel differenceTablePanel;
+	private JPanel explanationPanel;
 	
 	private boolean synchronizing = true;
 	
@@ -61,23 +68,14 @@ public class DifferenceList extends JPanel implements Disposable {
 		}
 		
 		private void globalDiffSelectionChanged() {
-			explanationLabel.setText("");
-			EntityBasedDiff diff = diffs.getSelection();
+			final EntityBasedDiff diff = diffs.getSelection();
 			if (diff != null) {
 				entityBasedDiffList.setSelectedValue(diff, true);
-				diffModel.setMatches(diff.getAxiomMatches());
-				OWLEntity sourceEntity = diff.getSourceEntity();
-				if (sourceEntity != null) {
-					OwlDiffMap diffMap = diffs.getEngine().getOwlDiffMap();
-					String explanation = diffMap.getExplanation(sourceEntity);
-					if (explanation != null) {
-						explanationLabel.setText(explanation);
-					}
-				}
+				setDiffModelMatches(diff);
 			}
 		}
 	};
-
+	
 	public DifferenceList(OWLEditorKit editorKit) {
 		this.editorKit = editorKit;
 		setLayout(new BorderLayout());
@@ -131,7 +129,7 @@ public class DifferenceList extends JPanel implements Disposable {
 						diffs.setSelection(diff);
 					}
 					else {
-						diffModel.setMatches(diff.getAxiomMatches());
+						setDiffModelMatches(diff);
 					}
 				}
 			}
@@ -144,22 +142,103 @@ public class DifferenceList extends JPanel implements Disposable {
 	}
 	
 	private JComponent createDifferenceTable() {
-		JPanel panel = new JPanel();
-		panel.setLayout(new BorderLayout());
+		differenceTablePanel = new JPanel();
+		differenceTablePanel.setLayout(new BorderLayout());
 		
-		explanationLabel = new JLabel();
-		panel.add(explanationLabel, BorderLayout.NORTH);
-		
-		JTable table = new JTable();
+		explanationPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		explanationPanel.setAlignmentX(LEFT_ALIGNMENT);
+		differenceTablePanel.add(explanationPanel, BorderLayout.NORTH);
+
 		diffModel = new DifferenceTableModel(renderer);
-		table.setModel(diffModel);
-		table.setDefaultRenderer(String.class, new MultiLineCellRenderer());
-		table.setRowHeight(60);
+
+		differenceTablePanel.add(new JScrollPane(new DifferenceTable(diffModel)), BorderLayout.CENTER);
+		return differenceTablePanel;
+	}
+	
+	private void setDiffModelMatches(final EntityBasedDiff diff) {
+		explanationPanel.removeAll();
+		diffModel.setMatches(diff.getAxiomMatches());
+		OWLEntity sourceEntity = diff.getSourceEntity();
+		if (sourceEntity != null) {
+			OwlDiffMap diffMap = diffs.getEngine().getOwlDiffMap();
+			String explanation = diffMap.getExplanation(sourceEntity);
+			if (explanation != null) {
+				JLabel label = new JLabel(explanation);
+				explanationPanel.add(label);
+			}
+		}
+		if (diff.getDiffTypeDescription().equals(IdentifyDeprecatedAndReplaced.DEPRECATED_AND_REPLACED_DIFF_TYPE)) {
+			JButton explain = new JButton("Explain This!");
+			explanationPanel.add(explain);
+			explain.addActionListener(new ActionListener() {
+				
+				public void actionPerformed(ActionEvent e) {
+					explainDeprecateAndReplace(diff);
+				}
+			});
+		}
+		differenceTablePanel.validate();
+		differenceTablePanel.repaint();
+	}
+
+	private void explainDeprecateAndReplace(EntityBasedDiff diff) {
+		OWLEntity deprecatedEntity = diff.getTargetEntity();
+		final EntityBasedDiff altDiff = diffs.getEngine().getChanges().getSourceDiffMap().get(deprecatedEntity);
+		OWLEntity replacementEntity = altDiff.getTargetEntity();
 		
-		// table.setDefaultRenderer(OWLAxiom.class, new OWLCellRenderer(editorKit, false, false));
+		final JDialog dialog = new JDialog();
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.setLocation(getLocation());
+        
+		JPanel panel = new JPanel(new BorderLayout());
 		
-		panel.add(new JScrollPane(table), BorderLayout.CENTER);
-		return panel;
+		JTextArea explanationText = new JTextArea();
+		explanationText.setLineWrap(true);
+		explanationText.setWrapStyleWord(true);
+		explanationText.setText(generateDeprecateAndReplaceText(deprecatedEntity, replacementEntity));
+		panel.add(explanationText, BorderLayout.NORTH);
+		
+		DifferenceTableModel myModel = new DifferenceTableModel(renderer);
+		myModel.setMatches(altDiff.getAxiomMatches());
+		panel.add(new JScrollPane(new DifferenceTable(myModel)), BorderLayout.CENTER);
+		
+		JPanel bottomButtons = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		JButton jumpToDiff = new JButton("Jump There");
+		jumpToDiff.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				diffs.setSelection(altDiff);
+				if (isSynchronizing()) {
+					dialog.dispose();
+				}
+			}
+		});
+		bottomButtons.add(jumpToDiff);
+		panel.add(bottomButtons, BorderLayout.SOUTH);
+		
+		dialog.add(panel);
+		dialog.pack();
+		dialog.setVisible(true);
+	}
+	
+	public String generateDeprecateAndReplaceText(OWLEntity deprecatedEntity, OWLEntity replacementEntity) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("At some point the entity, ");
+		sb.append(renderer.renderSourceObject(deprecatedEntity));
+		sb.append(", was deprecated and replaced with a new entity, ");
+		sb.append(renderer.renderTargetObject(replacementEntity));
+		sb.append(".  The difference engine has detected this and responded by mapping the old entity, ");
+		sb.append(renderer.renderSourceObject(deprecatedEntity));
+		sb.append(", to its replacement, ");
+		sb.append(renderer.renderTargetObject(replacementEntity));
+		sb.append(".  This is slightly confusing because it means that in the second ontology the deprecated entity, ");
+		sb.append(renderer.renderSourceObject(deprecatedEntity));
+		sb.append(", and its axioms appear to be new.\n\nThe explanation provided for why ");
+		sb.append(renderer.renderSourceObject(deprecatedEntity));
+		sb.append(" maps to ");
+		sb.append(renderer.renderTargetObject(replacementEntity));
+		sb.append(" is \n\n");
+		sb.append(diffs.getEngine().getOwlDiffMap().getExplanation(deprecatedEntity));
+		return sb.toString();
 	}
 	
 	public void dispose() {
