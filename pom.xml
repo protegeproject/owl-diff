@@ -59,7 +59,7 @@
         <dependency>
             <groupId>protege4</groupId>
             <artifactId>org.protege.owl.diff</artifactId>
-            <version>1.0.0.2011_07_14_1616</version>
+            <version>1.0.0.2011_07_15_0943</version>
         </dependency>
         <dependency>
           <groupId>owlapi</groupId>
