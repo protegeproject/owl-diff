@@ -32,8 +32,8 @@ public class StartDiff extends ProtegeOWLAction {
 		return RenderingService.get(differenceManager.getEngine());
 	}
 	
-	public static OWLEditorKit getAltEditorKit(Engine e) {
-		OntologyInAltWorkspaceFactory factory = e.getService(OntologyInAltWorkspaceFactory.class);
+	public static OWLEditorKit getAltEditorKit(OWLModelManager p4Manager) {
+		OntologyInAltWorkspaceFactory factory = (OntologyInAltWorkspaceFactory) p4Manager.get(OntologyInAltWorkspaceFactory.class);
 		return factory != null ? factory.getAltEditorKit() : null;
 	}
 	
@@ -70,18 +70,11 @@ public class StartDiff extends ProtegeOWLAction {
 	private void calculateDiffs(IRI baselineOntologyLocation, Configuration configuration, ProgressMonitor monitor, boolean loadInSeparateWorkspace) {
 		try {
 			monitor.setNote("Loading ontology for comparison");
-			OWLOntology baselineOntology;
-			OntologyInAltWorkspaceFactory factory = null;
-			if (loadInSeparateWorkspace) {
-				factory = new OntologyInAltWorkspaceFactory(getOWLEditorKit());
-				baselineOntology = factory.loadInSeparateSynchronizedWorkspace(baselineOntologyLocation);
-			}
-			else {
-				OWLOntologyLoaderConfiguration ontologyLoaderConfig = new OWLOntologyLoaderConfiguration();
-				ontologyLoaderConfig.setSilentMissingImportsHandling(true);
-				OWLOntologyManager baselineManager = OWLManager.createOWLOntologyManager();
-				baselineOntology = baselineManager.loadOntologyFromOntologyDocument(new IRIDocumentSource(baselineOntologyLocation), ontologyLoaderConfig);
-			}
+
+			OntologyInAltWorkspaceFactory factory = new OntologyInAltWorkspaceFactory(getOWLEditorKit(), loadInSeparateWorkspace);
+			OWLOntology baselineOntology = factory.loadInSeparateSynchronizedWorkspace(baselineOntologyLocation);
+			getOWLEditorKit().getModelManager().put(OntologyInAltWorkspaceFactory.class, factory);
+
 			monitor.setProgress(1);
 			
 			monitor.setNote("Calculating differences");
