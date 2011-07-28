@@ -13,15 +13,10 @@ import org.protege.editor.owl.diff.model.DifferenceManager;
 import org.protege.editor.owl.model.OWLModelManager;
 import org.protege.editor.owl.model.OWLWorkspace;
 import org.protege.editor.owl.ui.action.ProtegeOWLAction;
-import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.conf.Configuration;
 import org.protege.owl.diff.service.RenderingService;
-import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.io.IRIDocumentSource;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyLoaderConfiguration;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 
 public class StartDiff extends ProtegeOWLAction {
