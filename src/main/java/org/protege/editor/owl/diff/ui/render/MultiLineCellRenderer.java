@@ -1,4 +1,4 @@
-package org.protege.editor.owl.diff.ui.view;
+package org.protege.editor.owl.diff.ui.render;
 
 /**
  * MultiLineCellRenderer.java
@@ -22,6 +22,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableCellRenderer;
 
 public class MultiLineCellRenderer extends JTextArea implements TableCellRenderer, Serializable {
+  private static final long serialVersionUID = -6685029769696008674L;
 
   protected static Border noFocusBorder; 
     
