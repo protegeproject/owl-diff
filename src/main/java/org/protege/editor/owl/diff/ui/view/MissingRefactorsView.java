@@ -19,6 +19,7 @@ import org.protege.editor.owl.diff.model.DifferenceEvent;
 import org.protege.editor.owl.diff.model.DifferenceListener;
 import org.protege.editor.owl.diff.model.DifferenceManager;
 import org.protege.editor.owl.diff.ui.boot.StartDiff;
+import org.protege.editor.owl.diff.ui.render.EntityBasedDiffRenderer;
 import org.protege.editor.owl.ui.view.AbstractOWLViewComponent;
 import org.protege.owl.diff.present.Changes;
 import org.protege.owl.diff.present.EntityBasedDiff;
