@@ -12,19 +12,27 @@
         <headerColor value="@org.protege.ontologycolor"/>
         <category value="@org.protege.differencecategory"/>
     </extension>
+    
+    <extension id="Unattached Differences View"
+               point="org.protege.editor.core.application.ViewComponent">
+        <label value="Differences with No Subject"/>
+        <class value="org.protege.editor.owl.diff.ui.view.UnattachedDifferencesView"/>
+        <headerColor value="@org.protege.ontologycolor"/>
+        <category value="@org.protege.differencecategory"/>
+    </extension>    
 
     <extension id="Missing Refactors View"
                point="org.protege.editor.core.application.ViewComponent">
-        <label value="Missing Refactors"/>
+        <label value="Potentially Missed Alignments"/>
         <class value="org.protege.editor.owl.diff.ui.view.MissingRefactorsView"/>
         <headerColor value="@org.protege.ontologycolor"/>
         <category value="@org.protege.differencecategory"/>
     </extension>
     
     <extension id="DifferenceTable"
-         	  name="Difference Table"
+         	  name="Ontology Differences Tab"
               point="org.protege.editor.core.application.WorkspaceTab">
-      <label value="Difference Table"/>
+      <label value="Ontology Differences"/>
       <class value="org.protege.editor.owl.ui.OWLWorkspaceViewsTab"/>
       <index value="Z"/>
       <editorKitId value="OWLEditorKit"/>
