@@ -21,10 +21,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.protege.editor.core.Disposable;
+import org.protege.editor.core.ProtegeApplication;
 import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.diff.model.DifferenceEvent;
 import org.protege.editor.owl.diff.model.DifferenceListener;
@@ -44,7 +46,6 @@ public class DifferenceList extends JPanel implements Disposable {
 	
 	private DifferenceManager diffs;
 	private DifferenceTableModel diffModel;
-	private RenderingService renderer;
 	
 	private JList  entityBasedDiffList;
 	private JPanel differenceTablePanel;
@@ -55,7 +56,7 @@ public class DifferenceList extends JPanel implements Disposable {
 	private DifferenceListener diffListener = new DifferenceListener() {
 		public void statusChanged(DifferenceEvent event) {
 			if (event == DifferenceEvent.DIFF_COMPLETED) {
-				renderer = StartDiff.getRenderingService(editorKit.getModelManager());
+				RenderingService renderer = RenderingService.get(diffs.getEngine());
 				fillEntityBasedDiffList();
 			}
 			else if (event == DifferenceEvent.DIFF_RESET) {
@@ -80,7 +81,6 @@ public class DifferenceList extends JPanel implements Disposable {
 		this.editorKit = editorKit;
 		setLayout(new BorderLayout());
 		this.diffs = DifferenceManager.get(editorKit.getModelManager());
-		renderer = StartDiff.getRenderingService(editorKit.getModelManager());
 		add(createDifferenceListComponent(), BorderLayout.WEST);
 		add(createDifferenceTable(), BorderLayout.CENTER);
 		if (diffs.isReady()) {
@@ -98,26 +98,37 @@ public class DifferenceList extends JPanel implements Disposable {
 	}
 	
 	private void fillEntityBasedDiffList() {
+		final RenderingService renderer = StartDiff.getRenderingService(editorKit.getModelManager());
 		Changes changes = diffs.getEngine().getChanges();
-		DefaultListModel model = (DefaultListModel) entityBasedDiffList.getModel();
-		List<EntityBasedDiff> listOfDiffs = new ArrayList<EntityBasedDiff>(changes.getEntityBasedDiffs());
+		final DefaultListModel model = (DefaultListModel) entityBasedDiffList.getModel();
+		final List<EntityBasedDiff> listOfDiffs = new ArrayList<EntityBasedDiff>(changes.getEntityBasedDiffs());
 		Collections.sort(listOfDiffs, new Comparator<EntityBasedDiff>() {
 			public int compare(EntityBasedDiff diff1, EntityBasedDiff diff2) {
 				return renderer.renderDiff(diff1).compareTo(renderer.renderDiff(diff2));
 			}
 		});
-		model.clear();
-		for (EntityBasedDiff diff : listOfDiffs) {
-			model.addElement(diff);
+		try {
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					model.clear();
+					for (EntityBasedDiff diff : listOfDiffs) {
+						model.addElement(diff);
+					}
+					entityBasedDiffList.repaint();
+				}
+			});
 		}
-		entityBasedDiffList.repaint();
+		catch (Exception e) {
+			ProtegeApplication.getErrorLog().logError(e);
+		}
+
 	}
 	
 	private JComponent createDifferenceListComponent() {
 		entityBasedDiffList = new JList();
 		entityBasedDiffList.setModel(new DefaultListModel());
 		entityBasedDiffList.setSelectionModel(new DefaultListSelectionModel());
-		entityBasedDiffList.setCellRenderer(new EntityBasedDiffRenderer(renderer));
+		entityBasedDiffList.setCellRenderer(new EntityBasedDiffRenderer(diffs));
 		entityBasedDiffList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		entityBasedDiffList.addListSelectionListener(new ListSelectionListener() {
 
@@ -149,7 +160,7 @@ public class DifferenceList extends JPanel implements Disposable {
 		explanationPanel.setAlignmentX(LEFT_ALIGNMENT);
 		differenceTablePanel.add(explanationPanel, BorderLayout.NORTH);
 
-		diffModel = new DifferenceTableModel(renderer);
+		diffModel = new DifferenceTableModel(diffs);
 
 		differenceTablePanel.add(new JScrollPane(new DifferenceTable(diffModel)), BorderLayout.CENTER);
 		return differenceTablePanel;
@@ -182,6 +193,7 @@ public class DifferenceList extends JPanel implements Disposable {
 	}
 
 	private void explainDeprecateAndReplace(EntityBasedDiff diff) {
+		RenderingService renderer = StartDiff.getRenderingService(editorKit.getModelManager());
 		OWLEntity deprecatedEntity = diff.getTargetEntity();
 		final EntityBasedDiff altDiff = diffs.getEngine().getChanges().getSourceDiffMap().get(deprecatedEntity);
 		OWLEntity replacementEntity = altDiff.getTargetEntity();
@@ -195,10 +207,10 @@ public class DifferenceList extends JPanel implements Disposable {
 		JTextArea explanationText = new JTextArea();
 		explanationText.setLineWrap(true);
 		explanationText.setWrapStyleWord(true);
-		explanationText.setText(generateDeprecateAndReplaceText(deprecatedEntity, replacementEntity));
+		explanationText.setText(generateDeprecateAndReplaceText(renderer, deprecatedEntity, replacementEntity));
 		panel.add(explanationText, BorderLayout.NORTH);
 		
-		DifferenceTableModel myModel = new DifferenceTableModel(renderer);
+		DifferenceTableModel myModel = new DifferenceTableModel(diffs);
 		myModel.setMatches(altDiff.getAxiomMatches());
 		panel.add(new JScrollPane(new DifferenceTable(myModel)), BorderLayout.CENTER);
 		
@@ -220,7 +232,7 @@ public class DifferenceList extends JPanel implements Disposable {
 		dialog.setVisible(true);
 	}
 	
-	public String generateDeprecateAndReplaceText(OWLEntity deprecatedEntity, OWLEntity replacementEntity) {
+	public String generateDeprecateAndReplaceText(RenderingService renderer, OWLEntity deprecatedEntity, OWLEntity replacementEntity) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("At some point the entity, ");
 		sb.append(renderer.renderSourceObject(deprecatedEntity));
