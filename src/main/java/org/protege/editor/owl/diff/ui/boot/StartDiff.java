@@ -1,22 +1,16 @@
 package org.protege.editor.owl.diff.ui.boot;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 
-import javax.swing.JDialog;
 import javax.swing.ProgressMonitor;
 
 import org.protege.editor.core.ProtegeApplication;
-import org.protege.editor.core.ui.workspace.WorkspaceTab;
-import org.protege.editor.core.ui.workspace.WorkspaceTabPlugin;
-import org.protege.editor.core.ui.workspace.WorkspaceTabPluginLoader;
 import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.diff.model.DifferenceManager;
-import org.protege.editor.owl.diff.ui.view.DifferenceList;
+import org.protege.editor.owl.diff.ui.DifferenceDialog;
 import org.protege.editor.owl.model.OWLModelManager;
-import org.protege.editor.owl.model.OWLWorkspace;
 import org.protege.editor.owl.ui.action.ProtegeOWLAction;
 import org.protege.owl.diff.conf.Configuration;
 import org.protege.owl.diff.service.RenderingService;
@@ -88,7 +82,7 @@ public class StartDiff extends ProtegeOWLAction {
 			}
 			SynchronizeDifferenceListener.synchronize(diffs, getOWLEditorKit(), true);
 			
-			selectTab();
+			showDiffs();
 		}
 		catch (Throwable t) {
 			ProtegeApplication.getErrorLog().logError(t);
@@ -99,12 +93,8 @@ public class StartDiff extends ProtegeOWLAction {
 	}
 	
 	
-	private void selectTab() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-		JDialog dialog = new JDialog();
-		dialog.setLayout(new BorderLayout());
-		DifferenceList differences = new DifferenceList(getOWLEditorKit());
-		dialog.add(differences, BorderLayout.CENTER);
-		differences.setSynchronizing(true);
+	private void showDiffs() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+		DifferenceDialog dialog = new DifferenceDialog(getOWLEditorKit());
 		dialog.setLocation(new Point(100,100));
 		dialog.pack();
 		dialog.setSize(new Dimension(1000,500));
