@@ -10,6 +10,8 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.protege.editor.core.Disposable;
 import org.protege.editor.core.ProtegeApplication;
+import org.protege.editor.owl.diff.ui.boot.ProtegeShortFormProvider;
+import org.protege.editor.owl.diff.ui.boot.StartDiff;
 import org.protege.editor.owl.model.OWLModelManager;
 import org.protege.editor.owl.ui.renderer.OWLRendererPreferences;
 import org.protege.owl.diff.Engine;
@@ -66,33 +68,20 @@ public class DifferenceManager implements Disposable {
 		StopWatch stopWatch = new StopWatch(LOGGER);
 		LOGGER.info("Starting Difference calculation...");
 		engine = new Engine(manager.getOWLDataFactory(), baselineOntology, workspaceOntology);
+		setupRendering(engine);
 		configuration.configure(engine);
 		engine.phase1();
 		stopWatch.measure();
 		LOGGER.info("Calculating presentation...");
 		engine.phase2();
 		stopWatch.finish();
-		setupRendering(engine, manager.getOWLDataFactory(), baselineOntology, workspaceOntology);
 		fireStatusChanged(DifferenceEvent.DIFF_COMPLETED);
 	}
 	
-	private void setupRendering(Engine e, OWLDataFactory factory, OWLOntology sourceOntology, OWLOntology targetOntology) {
+	private void setupRendering(Engine e) {		
 		RenderingService renderer = RenderingService.get(e);
-		OWLRendererPreferences preferences = OWLRendererPreferences.getInstance();
-		List<String> langs = preferences.getAnnotationLangs();
-		Map<OWLAnnotationProperty, List<String>> langMap = new HashMap<OWLAnnotationProperty, List<String>>();
-		List<OWLAnnotationProperty> annotationProperties = new ArrayList<OWLAnnotationProperty>();
-		for (IRI iri : preferences.getAnnotationIRIs()) {
-			OWLAnnotationProperty annotationProperty = factory.getOWLAnnotationProperty(iri);
-			annotationProperties.add(annotationProperty);
-			langMap.put(annotationProperty, langs);
-		}
-		
-		OWLOntologySetProvider sourceOntologies = new OWLOntologyImportsClosureSetProvider(sourceOntology.getOWLOntologyManager(), sourceOntology);
-		renderer.setSourceShortFormProvider(new AnnotationValueShortFormProvider(annotationProperties, langMap, sourceOntologies));
-		
-		OWLOntologySetProvider targetOntologies = new OWLOntologyImportsClosureSetProvider(targetOntology.getOWLOntologyManager(), targetOntology);
-		renderer.setTargetShortFormProvider(new AnnotationValueShortFormProvider(annotationProperties, langMap, targetOntologies));
+		renderer.setSourceShortFormProvider(new ProtegeShortFormProvider(StartDiff.getAltEditorKit(manager).getModelManager()));
+		renderer.setSourceShortFormProvider(new ProtegeShortFormProvider(manager));
 	}
 	
 	/* TODO - set  with preferences and presets */
