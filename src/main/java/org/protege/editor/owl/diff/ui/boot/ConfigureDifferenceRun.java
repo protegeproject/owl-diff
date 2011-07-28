@@ -34,9 +34,10 @@ import org.protege.editor.owl.ui.UIHelper;
 import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.algorithms.DeferDeprecationAlgorithm;
+import org.protege.owl.diff.align.algorithms.MatchByRendering;
 import org.protege.owl.diff.conf.Configuration;
 import org.protege.owl.diff.present.PresentationAlgorithm;
-import org.protege.owl.diff.service.CodeToEntityMapper;
+import org.protege.owl.diff.service.RenderingService;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -49,7 +50,6 @@ public class ConfigureDifferenceRun extends JDialog {
 	private JCheckBox doDeprecationAndReplace;
 	private JComboBox aggressiveness;
 	private JCheckBox useLabel;
-	private JComboBox labelBox;
 	private boolean ok = false;
 
 	public ConfigureDifferenceRun(OWLEditorKit eKit) {
@@ -78,9 +78,7 @@ public class ConfigureDifferenceRun extends JDialog {
 
 	public Configuration getConfiguration() {
 		Configuration config = new Configuration();
-		if (useLabel.isSelected()) {
-			config.put(CodeToEntityMapper.CODE_ANNOTATION_PROPERTY, ((OWLAnnotationProperty) labelBox.getSelectedItem()).getIRI().toString());
-		}
+
 		AlignmentAggressiveness effort = (AlignmentAggressiveness) aggressiveness.getSelectedItem();
 		for (Class<? extends AlignmentAlgorithm> alg : DifferenceActivator.createAlignmentAlgorithms()) {
 			try {
@@ -92,6 +90,9 @@ public class ConfigureDifferenceRun extends JDialog {
 				ProtegeApplication.getErrorLog().logError(e);
 			}
 		}
+		if (useLabel.isSelected()) {
+			config.addAlignmentAlgorithm(MatchByRendering.class);
+		}
 		if (doDeprecationAndReplace.isSelected()) {
 			config.addAlignmentAlgorithm(DeferDeprecationAlgorithm.class);
 		}
@@ -101,7 +102,6 @@ public class ConfigureDifferenceRun extends JDialog {
 		
 		return config;
 	}
-	
 	
 	private void createGui() {
 		setLayout(new BorderLayout());
@@ -179,23 +179,10 @@ public class ConfigureDifferenceRun extends JDialog {
 		JPanel panel = new JPanel(new FlowLayout());
 		panel.setAlignmentY(LEFT_ALIGNMENT);
 		
-		useLabel = new JCheckBox("Align entities using an annotation property");
+		useLabel = new JCheckBox("Align entities using rendering.");
 		useLabel.setAlignmentY(LEFT_ALIGNMENT);
 		panel.add(useLabel);
 		
-		labelBox = new JComboBox(getAnnotationProperties().toArray());
-		final OWLModelManager p4Manager = eKit.getOWLModelManager();
-		labelBox.setRenderer(new BasicComboBoxRenderer() {
-			private static final long serialVersionUID = 6962612886718094978L;
-
-			public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-				JLabel rendering = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-				rendering.setText(p4Manager.getRendering((OWLAnnotationProperty) value));
-				return rendering;
-			}
-		});
-		labelBox.setSelectedItem(p4Manager.getOWLDataFactory().getRDFSLabel());
-		panel.add(labelBox);
 		panel.setAlignmentY(LEFT_ALIGNMENT);
 		
 		return panel;
