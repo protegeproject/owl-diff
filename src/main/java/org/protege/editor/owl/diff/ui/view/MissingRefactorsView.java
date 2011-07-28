@@ -93,7 +93,7 @@ public class MissingRefactorsView extends AbstractOWLViewComponent {
 	
 	private void deletedSelectionChanged() {
 		Object o = deletedList.getSelectedValue();
-		OWLEditorKit altOWLEditorKit = StartDiff.getAltEditorKit(differenceManager.getEngine());
+		OWLEditorKit altOWLEditorKit = StartDiff.getAltEditorKit(getOWLModelManager());
 		if (altOWLEditorKit != null && o instanceof EntityBasedDiff && ((EntityBasedDiff) o).getTargetEntity() == null) {
 			altOWLEditorKit.getOWLWorkspace().getOWLSelectionModel().setSelectedEntity(((EntityBasedDiff) o).getSourceEntity());
 		}
@@ -103,9 +103,9 @@ public class MissingRefactorsView extends AbstractOWLViewComponent {
 		if (differenceManager.isReady()) {
 			renderer = StartDiff.getRenderingService(getOWLModelManager());
 			createdList.removeAll();
-			createdList.setCellRenderer(new EntityBasedDiffRenderer(renderer));
+			createdList.setCellRenderer(new EntityBasedDiffRenderer(differenceManager));
 			deletedList.removeAll();
-			deletedList.setCellRenderer(new EntityBasedDiffRenderer(renderer));
+			deletedList.setCellRenderer(new EntityBasedDiffRenderer(differenceManager));
 			Changes changes = differenceManager.getEngine().getChanges();
 			List<EntityBasedDiff> listOfDiffs = new ArrayList<EntityBasedDiff>(changes.getEntityBasedDiffs());
 			Collections.sort(listOfDiffs, new Comparator<EntityBasedDiff>() {
