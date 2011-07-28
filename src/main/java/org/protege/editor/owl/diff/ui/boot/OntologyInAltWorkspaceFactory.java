@@ -13,9 +13,11 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 public class OntologyInAltWorkspaceFactory implements Disposable {
 	private OWLEditorKit eKit;
 	private OWLEditorKit altEditorKit;
+	private boolean display;
 	
-	public OntologyInAltWorkspaceFactory(OWLEditorKit eKit) {
+	public OntologyInAltWorkspaceFactory(OWLEditorKit eKit, boolean display) {
 		this.eKit = eKit;
+		this.display = display;
 	}
 	
 	public OWLOntology loadInSeparateSynchronizedWorkspace(IRI ontologyLocation) throws OWLOntologyCreationException {
@@ -35,9 +37,11 @@ public class OntologyInAltWorkspaceFactory implements Disposable {
 			}
 		}
 		altEditorKit.getOWLModelManager().setActiveOntology(ontology);
-		ProtegeManager.getInstance().getEditorKitManager().addEditorKit(altEditorKit);
-		altEditorKit.getOWLWorkspace().setTitle("Workspace for original version of ontology");
 		altEditorKit.put(UUID.randomUUID(), this); // ensure its disposal.
+		if (display) {
+			ProtegeManager.getInstance().getEditorKitManager().addEditorKit(altEditorKit);
+			altEditorKit.getOWLWorkspace().setTitle("Workspace for original version of ontology");
+		}
 		eKit.getOWLWorkspace().requestFocusInWindow();
 		return ontology;
 	}
