@@ -1,6 +1,10 @@
 package org.protege.editor.owl.diff.ui.boot;
 
+import java.awt.Point;
 import java.util.UUID;
+
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 import org.protege.editor.core.Disposable;
 import org.protege.editor.core.ProtegeManager;
@@ -41,6 +45,9 @@ public class OntologyInAltWorkspaceFactory implements Disposable {
 		if (display) {
 			ProtegeManager.getInstance().getEditorKitManager().addEditorKit(altEditorKit);
 			altEditorKit.getOWLWorkspace().setTitle("Workspace for original version of ontology");
+			Point originalPoint = SwingUtilities.getAncestorOfClass(JFrame.class, eKit.getWorkspace()).getLocation();
+			Point newPoint = new Point(originalPoint.x + 60, originalPoint.y + 20);
+			SwingUtilities.getAncestorOfClass(JFrame.class, altEditorKit.getOWLWorkspace()).setLocation(newPoint);
 		}
 		eKit.getOWLWorkspace().requestFocusInWindow();
 		return ontology;
