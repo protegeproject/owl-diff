@@ -1,7 +1,11 @@
 package org.protege.editor.owl.diff.ui.boot;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 
+import javax.swing.JDialog;
 import javax.swing.ProgressMonitor;
 
 import org.protege.editor.core.ProtegeApplication;
@@ -10,6 +14,7 @@ import org.protege.editor.core.ui.workspace.WorkspaceTabPlugin;
 import org.protege.editor.core.ui.workspace.WorkspaceTabPluginLoader;
 import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.diff.model.DifferenceManager;
+import org.protege.editor.owl.diff.ui.view.DifferenceList;
 import org.protege.editor.owl.model.OWLModelManager;
 import org.protege.editor.owl.model.OWLWorkspace;
 import org.protege.editor.owl.ui.action.ProtegeOWLAction;
@@ -45,6 +50,7 @@ public class StartDiff extends ProtegeOWLAction {
 	
 	public void actionPerformed(ActionEvent e) {
 		ConfigureDifferenceRun confWindow = new ConfigureDifferenceRun(getOWLEditorKit());
+		confWindow.setLocation(new Point(200,200));
 		confWindow.setVisible(true);
 		final IRI f = confWindow.getBaseline();
 		final boolean loadInSeparateWorkspace = confWindow.getOpenBaselineInSeparateWindow();
@@ -94,20 +100,15 @@ public class StartDiff extends ProtegeOWLAction {
 	
 	
 	private void selectTab() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-		String tabId = "org.protege.editor.owl.diff.DifferenceTable";
-		OWLWorkspace workspace = getOWLWorkspace();
-		if (!workspace.containsTab(tabId)) {
-			WorkspaceTabPluginLoader loader = new WorkspaceTabPluginLoader(workspace);
-			for (WorkspaceTabPlugin plugin : loader.getPlugins()) {
-				if (plugin.getId().equals(tabId)) {
-					WorkspaceTab tab = plugin.newInstance();
-					workspace.addTab(tab);
-					break;
-				}
-			}
-		}
-		WorkspaceTab tab = workspace.getWorkspaceTab(tabId);
-		workspace.setSelectedTab(tab);
+		JDialog dialog = new JDialog();
+		dialog.setLayout(new BorderLayout());
+		DifferenceList differences = new DifferenceList(getOWLEditorKit());
+		dialog.add(differences, BorderLayout.CENTER);
+		differences.setSynchronizing(true);
+		dialog.setLocation(new Point(100,100));
+		dialog.pack();
+		dialog.setSize(new Dimension(1000,500));
+		dialog.setVisible(true);
 	}
 
 }
