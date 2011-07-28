@@ -6,6 +6,7 @@ import java.util.SortedSet;
 
 import javax.swing.table.AbstractTableModel;
 
+import org.protege.editor.owl.diff.model.DifferenceManager;
 import org.protege.owl.diff.present.MatchedAxiom;
 import org.protege.owl.diff.service.RenderingService;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -30,11 +31,11 @@ public class DifferenceTableModel extends AbstractTableModel {
 		}
 	}
 	
-	private RenderingService renderer;
+	private DifferenceManager diffs;
 	private List<MatchedAxiom> matches = new ArrayList<MatchedAxiom>();
 	
-	public DifferenceTableModel(RenderingService renderer) {
-		this.renderer = renderer;
+	public DifferenceTableModel(DifferenceManager diffs) {
+		this.diffs = diffs;
 	}
 	
 	public void setMatches(SortedSet<MatchedAxiom> matches) {
@@ -72,6 +73,7 @@ public class DifferenceTableModel extends AbstractTableModel {
 
 
 	public Object getValueAt(int row, int col) {
+		RenderingService renderer = RenderingService.get(diffs.getEngine());
 		OWLAxiom axiom;
 		MatchedAxiom match = matches.get(row);
 		switch (Column.values()[col]) {
