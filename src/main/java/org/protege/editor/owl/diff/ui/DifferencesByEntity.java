@@ -1,15 +1,16 @@
-package org.protege.editor.owl.diff.ui.view;
+package org.protege.editor.owl.diff.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
@@ -31,7 +32,9 @@ import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.diff.model.DifferenceEvent;
 import org.protege.editor.owl.diff.model.DifferenceListener;
 import org.protege.editor.owl.diff.model.DifferenceManager;
+import org.protege.editor.owl.diff.model.EntityBasedDiffComparator;
 import org.protege.editor.owl.diff.ui.boot.StartDiff;
+import org.protege.editor.owl.diff.ui.render.EntityBasedDiffRenderer;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.present.Changes;
 import org.protege.owl.diff.present.EntityBasedDiff;
@@ -39,7 +42,7 @@ import org.protege.owl.diff.present.algorithms.IdentifyDeprecatedAndReplaced;
 import org.protege.owl.diff.service.RenderingService;
 import org.semanticweb.owlapi.model.OWLEntity;
 
-public class DifferenceList extends JPanel implements Disposable {
+public class DifferencesByEntity extends JPanel implements Disposable {
 	private static final long serialVersionUID = -3297368551819068585L;
 	
 	private OWLEditorKit editorKit;
@@ -56,7 +59,6 @@ public class DifferenceList extends JPanel implements Disposable {
 	private DifferenceListener diffListener = new DifferenceListener() {
 		public void statusChanged(DifferenceEvent event) {
 			if (event == DifferenceEvent.DIFF_COMPLETED) {
-				RenderingService renderer = RenderingService.get(diffs.getEngine());
 				fillEntityBasedDiffList();
 			}
 			else if (event == DifferenceEvent.DIFF_RESET) {
@@ -77,7 +79,7 @@ public class DifferenceList extends JPanel implements Disposable {
 		}
 	};
 	
-	public DifferenceList(OWLEditorKit editorKit) {
+	public DifferencesByEntity(OWLEditorKit editorKit) {
 		this.editorKit = editorKit;
 		setLayout(new BorderLayout());
 		this.diffs = DifferenceManager.get(editorKit.getModelManager());
@@ -95,6 +97,13 @@ public class DifferenceList extends JPanel implements Disposable {
 	
 	public void setSynchronizing(boolean synchronizing) {
 		this.synchronizing = synchronizing;
+		if (synchronizing) {
+			Object o = entityBasedDiffList.getSelectedValue();
+			if (o instanceof EntityBasedDiff) {
+				EntityBasedDiff diff = (EntityBasedDiff) o;
+				diffs.setSelection(diff);
+			}
+		}
 	}
 	
 	private void fillEntityBasedDiffList() {
@@ -102,11 +111,7 @@ public class DifferenceList extends JPanel implements Disposable {
 		Changes changes = diffs.getEngine().getChanges();
 		final DefaultListModel model = (DefaultListModel) entityBasedDiffList.getModel();
 		final List<EntityBasedDiff> listOfDiffs = new ArrayList<EntityBasedDiff>(changes.getEntityBasedDiffs());
-		Collections.sort(listOfDiffs, new Comparator<EntityBasedDiff>() {
-			public int compare(EntityBasedDiff diff1, EntityBasedDiff diff2) {
-				return renderer.renderDiff(diff1).compareTo(renderer.renderDiff(diff2));
-			}
-		});
+		Collections.sort(listOfDiffs, new EntityBasedDiffComparator(renderer));
 		try {
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
@@ -155,6 +160,7 @@ public class DifferenceList extends JPanel implements Disposable {
 	private JComponent createDifferenceTable() {
 		differenceTablePanel = new JPanel();
 		differenceTablePanel.setLayout(new BorderLayout());
+		differenceTablePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		
 		explanationPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		explanationPanel.setAlignmentX(LEFT_ALIGNMENT);
