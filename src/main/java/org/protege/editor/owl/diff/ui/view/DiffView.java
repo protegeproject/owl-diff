@@ -9,18 +9,15 @@ import org.protege.editor.core.ProtegeApplication;
 import org.protege.editor.owl.diff.model.DifferenceEvent;
 import org.protege.editor.owl.diff.model.DifferenceListener;
 import org.protege.editor.owl.diff.model.DifferenceManager;
+import org.protege.editor.owl.diff.ui.DifferencesByEntity;
 import org.protege.editor.owl.ui.view.AbstractOWLViewComponent;
-import org.protege.owl.diff.align.OwlDiffMap;
-import org.protege.owl.diff.present.Changes;
-import org.protege.owl.diff.present.EntityBasedDiff;
 import org.protege.owl.diff.util.Util;
-import org.semanticweb.owlapi.model.OWLEntity;
 
 public class DiffView extends AbstractOWLViewComponent {
 	private static final long serialVersionUID = -953820310817783007L;
 	public static final Logger LOGGER = Logger.getLogger(DiffView.class);
 	
-	private DifferenceList view;
+	private DifferencesByEntity view;
 	private JLabel status;
 	
 	private DifferenceListener listener = new DifferenceListener() {
@@ -34,7 +31,7 @@ public class DiffView extends AbstractOWLViewComponent {
 	protected void initialiseOWLView() {
 		setLayout(new BorderLayout());
 
-		view = new DifferenceList(getOWLEditorKit()) {
+		view = new DifferencesByEntity(getOWLEditorKit()) {
 			private static final long serialVersionUID = -88036681191093269L;
 
 			public boolean isSynchronizing() {
