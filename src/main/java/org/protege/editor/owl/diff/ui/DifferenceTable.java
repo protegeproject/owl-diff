@@ -1,6 +1,9 @@
-package org.protege.editor.owl.diff.ui.view;
+package org.protege.editor.owl.diff.ui;
 
 import javax.swing.JTable;
+
+import org.protege.editor.owl.diff.ui.render.MultiLineCellRenderer;
+
 
 public class DifferenceTable extends JTable {
 	private static final long serialVersionUID = 8289059052215956578L;
