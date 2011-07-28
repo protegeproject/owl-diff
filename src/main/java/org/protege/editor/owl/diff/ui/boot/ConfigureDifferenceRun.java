@@ -24,12 +24,10 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 import org.protege.editor.core.ProtegeApplication;
 import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.diff.DifferenceActivator;
-import org.protege.editor.owl.model.OWLModelManager;
 import org.protege.editor.owl.ui.UIHelper;
 import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
@@ -37,7 +35,6 @@ import org.protege.owl.diff.align.algorithms.DeferDeprecationAlgorithm;
 import org.protege.owl.diff.align.algorithms.MatchByRendering;
 import org.protege.owl.diff.conf.Configuration;
 import org.protege.owl.diff.present.PresentationAlgorithm;
-import org.protege.owl.diff.service.RenderingService;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -49,7 +46,6 @@ public class ConfigureDifferenceRun extends JDialog {
 	private JCheckBox openBaselineInSeparateWindow;
 	private JCheckBox doDeprecationAndReplace;
 	private JComboBox aggressiveness;
-	private JCheckBox useLabel;
 	private boolean ok = false;
 
 	public ConfigureDifferenceRun(OWLEditorKit eKit) {
@@ -90,9 +86,6 @@ public class ConfigureDifferenceRun extends JDialog {
 				ProtegeApplication.getErrorLog().logError(e);
 			}
 		}
-		if (useLabel.isSelected()) {
-			config.addAlignmentAlgorithm(MatchByRendering.class);
-		}
 		if (doDeprecationAndReplace.isSelected()) {
 			config.addAlignmentAlgorithm(DeferDeprecationAlgorithm.class);
 		}
@@ -124,7 +117,6 @@ public class ConfigureDifferenceRun extends JDialog {
 		centerPanel.add(createFilePanel());
 		centerPanel.add(createOpenInSeparateWorkspace());
 		centerPanel.add(createDeprecateAndReplace());
-		centerPanel.add(createAlignByLabelComponent());
 		centerPanel.add(chooseAggressivenessDropdown());
 		add(centerPanel, BorderLayout.CENTER);
 	}
@@ -172,19 +164,6 @@ public class ConfigureDifferenceRun extends JDialog {
 		openBaselineInSeparateWindow = new JCheckBox("Open original ontology in separate workspace");
 		openBaselineInSeparateWindow.setAlignmentY(LEFT_ALIGNMENT);
 		panel.add(openBaselineInSeparateWindow);
-		return panel;
-	}
-	
-	private JComponent createAlignByLabelComponent() {
-		JPanel panel = new JPanel(new FlowLayout());
-		panel.setAlignmentY(LEFT_ALIGNMENT);
-		
-		useLabel = new JCheckBox("Align entities using rendering.");
-		useLabel.setAlignmentY(LEFT_ALIGNMENT);
-		panel.add(useLabel);
-		
-		panel.setAlignmentY(LEFT_ALIGNMENT);
-		
 		return panel;
 	}
 
