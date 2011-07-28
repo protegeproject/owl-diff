@@ -1,4 +1,4 @@
-package org.protege.editor.owl.diff.ui.view;
+package org.protege.editor.owl.diff.ui;
 
 import java.util.ArrayList;
 import java.util.List;
