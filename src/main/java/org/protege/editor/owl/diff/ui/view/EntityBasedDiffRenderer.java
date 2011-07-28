@@ -6,6 +6,7 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
 
+import org.protege.editor.owl.diff.model.DifferenceManager;
 import org.protege.owl.diff.present.EntityBasedDiff;
 import org.protege.owl.diff.present.MatchedAxiom;
 import org.protege.owl.diff.present.algorithms.IdentifyDeprecatedEntity;
@@ -13,10 +14,10 @@ import org.protege.owl.diff.service.RenderingService;
 
 public class EntityBasedDiffRenderer extends DefaultListCellRenderer {
 	private static final long serialVersionUID = -2257588249282053158L;
-	private RenderingService renderer;
+	private DifferenceManager diffs;
 	
-	public EntityBasedDiffRenderer(RenderingService renderer) {
-		this.renderer = renderer;
+	public EntityBasedDiffRenderer(DifferenceManager diffs) {
+		this.diffs = diffs;
 	}
 
 	@Override
@@ -24,6 +25,7 @@ public class EntityBasedDiffRenderer extends DefaultListCellRenderer {
 												  int index, boolean isSelected, boolean cellHasFocus) {
 		JLabel text = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 		if (value instanceof EntityBasedDiff) {
+			RenderingService renderer = RenderingService.get(diffs.getEngine());
 			EntityBasedDiff diff = (EntityBasedDiff) value;
 			StringBuffer sb = new StringBuffer();
 			appendHtmlHeader(sb, diff);
