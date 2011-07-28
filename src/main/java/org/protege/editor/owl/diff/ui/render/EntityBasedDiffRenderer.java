@@ -1,4 +1,4 @@
-package org.protege.editor.owl.diff.ui.view;
+package org.protege.editor.owl.diff.ui.render;
 
 import java.awt.Component;
 
