@@ -35,6 +35,7 @@ import org.protege.editor.owl.diff.model.DifferenceManager;
 import org.protege.editor.owl.diff.model.EntityBasedDiffComparator;
 import org.protege.editor.owl.diff.ui.boot.StartDiff;
 import org.protege.editor.owl.diff.ui.render.EntityBasedDiffRenderer;
+import org.protege.owl.diff.align.AlignmentExplanation;
 import org.protege.owl.diff.align.OwlDiffMap;
 import org.protege.owl.diff.present.Changes;
 import org.protege.owl.diff.present.EntityBasedDiff;
@@ -178,9 +179,13 @@ public class DifferencesByEntity extends JPanel implements Disposable {
 		OWLEntity sourceEntity = diff.getSourceEntity();
 		if (sourceEntity != null) {
 			OwlDiffMap diffMap = diffs.getEngine().getOwlDiffMap();
-			String explanation = diffMap.getExplanation(sourceEntity);
+			AlignmentExplanation explanation = diffMap.getExplanation(sourceEntity);
 			if (explanation != null) {
-				JLabel label = new JLabel(explanation);
+				JLabel label = new JLabel(explanation.getExplanation());
+				String details = explanation.getDetailedExplanation(sourceEntity);
+				if (details != null) {
+					label.setToolTipText(details);	
+				}
 				explanationPanel.add(label);
 			}
 		}
