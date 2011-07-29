@@ -181,13 +181,16 @@ public class DifferencesByEntity extends JPanel implements Disposable {
 		OWLEntity sourceEntity = diff.getSourceEntity();
 		if (sourceEntity != null) {
 			OwlDiffMap diffMap = diffs.getEngine().getOwlDiffMap();
-			addExplanation(diffMap, diff, sourceEntity);
+			addGenericExplanation(diffMap, diff, sourceEntity);
+		}
+		else {
+			addDeprecateAndReplaceExplanation(diff);
 		}
 		differenceTablePanel.validate();
 		differenceTablePanel.repaint();
 	}
 	
-	private void addExplanation(OwlDiffMap diffMap, final EntityBasedDiff diff, final OWLEntity sourceEntity) {
+	private void addGenericExplanation(OwlDiffMap diffMap, final EntityBasedDiff diff, final OWLEntity sourceEntity) {
 		final AlignmentExplanation explanation = diffMap.getExplanation(sourceEntity);
 		if (explanation != null) {
 			JLabel label = new JLabel(explanation.getExplanation());
@@ -212,6 +215,9 @@ public class DifferencesByEntity extends JPanel implements Disposable {
 				explanationPanel.add(detailsButton, BorderLayout.EAST);
 			}
 		}
+	}
+	
+	private void addDeprecateAndReplaceExplanation(final EntityBasedDiff diff) {
 		// Can the following hack be removed?
 		if (diff.getDiffTypeDescription().equals(IdentifyDeprecatedAndReplaced.DEPRECATED_AND_REPLACED_DIFF_TYPE)) {
 			JButton explain = new JButton("Explain This!");
@@ -281,8 +287,8 @@ public class DifferencesByEntity extends JPanel implements Disposable {
 		sb.append(renderer.renderSourceObject(deprecatedEntity));
 		sb.append(" maps to ");
 		sb.append(renderer.renderTargetObject(replacementEntity));
-		sb.append(" is \n\n");
-		sb.append(diffs.getEngine().getOwlDiffMap().getExplanation(deprecatedEntity));
+		sb.append(" is \n\n\t");
+		sb.append(diffs.getEngine().getOwlDiffMap().getExplanation(deprecatedEntity).getExplanation());
 		return sb.toString();
 	}
 	
