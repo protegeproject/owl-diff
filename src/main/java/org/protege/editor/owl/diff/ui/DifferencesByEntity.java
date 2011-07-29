@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
@@ -163,7 +165,7 @@ public class DifferencesByEntity extends JPanel implements Disposable {
 		differenceTablePanel.setLayout(new BorderLayout());
 		differenceTablePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		
-		explanationPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		explanationPanel = new JPanel(new BorderLayout());
 		explanationPanel.setAlignmentX(LEFT_ALIGNMENT);
 		differenceTablePanel.add(explanationPanel, BorderLayout.NORTH);
 
@@ -179,19 +181,41 @@ public class DifferencesByEntity extends JPanel implements Disposable {
 		OWLEntity sourceEntity = diff.getSourceEntity();
 		if (sourceEntity != null) {
 			OwlDiffMap diffMap = diffs.getEngine().getOwlDiffMap();
-			AlignmentExplanation explanation = diffMap.getExplanation(sourceEntity);
-			if (explanation != null) {
-				JLabel label = new JLabel(explanation.getExplanation());
-				String details = explanation.getDetailedExplanation(sourceEntity);
-				if (details != null) {
-					label.setToolTipText(details);	
-				}
-				explanationPanel.add(label);
+			addExplanation(diffMap, diff, sourceEntity);
+		}
+		differenceTablePanel.validate();
+		differenceTablePanel.repaint();
+	}
+	
+	private void addExplanation(OwlDiffMap diffMap, final EntityBasedDiff diff, final OWLEntity sourceEntity) {
+		final AlignmentExplanation explanation = diffMap.getExplanation(sourceEntity);
+		if (explanation != null) {
+			JLabel label = new JLabel(explanation.getExplanation());
+			explanationPanel.add(label, BorderLayout.WEST);
+			if (explanation.hasDetailedExplanation(sourceEntity)) {
+				JButton detailsButton = new JButton("Details...");
+				detailsButton.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						JDialog dialog = new JDialog();
+						dialog.setTitle("Detailed explanation");
+						JTextPane detailsPane = new JTextPane();
+						detailsPane.setText(explanation.getDetailedExplanation(sourceEntity));
+						detailsPane.setEditable(false);
+						dialog.add(detailsPane);
+						dialog.setLocation(new Point(40,40));
+						dialog.pack();
+						dialog.setVisible(true);
+					}
+				});
+				explanationPanel.add(detailsButton, BorderLayout.EAST);
 			}
 		}
+		// Can the following hack be removed?
 		if (diff.getDiffTypeDescription().equals(IdentifyDeprecatedAndReplaced.DEPRECATED_AND_REPLACED_DIFF_TYPE)) {
 			JButton explain = new JButton("Explain This!");
-			explanationPanel.add(explain);
+			explanationPanel.add(explain, BorderLayout.EAST);
 			explain.addActionListener(new ActionListener() {
 				
 				public void actionPerformed(ActionEvent e) {
@@ -199,8 +223,6 @@ public class DifferencesByEntity extends JPanel implements Disposable {
 				}
 			});
 		}
-		differenceTablePanel.validate();
-		differenceTablePanel.repaint();
 	}
 
 	private void explainDeprecateAndReplace(EntityBasedDiff diff) {
