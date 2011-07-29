@@ -5,6 +5,12 @@
             <Component label="Difference List">
                 <Property id="pluginId" value="org.protege.editor.owl.diff.Protege Compare View"/>
             </Component>
+            <Component label="Differences with No Subject">
+                <Property id="pluginId" value="org.protege.editor.owl.diff.Unattached Differences View"/>
+            </Component>
+            <Component label="Potentially Missed Alignments">
+                <Property id="pluginId" value="org.protege.editor.owl.diff.Missing Refactors View"/>
+            </Component>
         </CNode>
     </VSNode>
 </layout>
