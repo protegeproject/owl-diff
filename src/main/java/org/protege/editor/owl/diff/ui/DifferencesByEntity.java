@@ -199,7 +199,6 @@ public class DifferencesByEntity extends JPanel implements Disposable {
 				JButton detailsButton = new JButton("Details...");
 				detailsButton.addActionListener(new ActionListener() {
 					
-					@Override
 					public void actionPerformed(ActionEvent e) {
 						JDialog dialog = new JDialog();
 						dialog.setTitle("Detailed explanation");
