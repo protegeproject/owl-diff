@@ -37,6 +37,7 @@ public class DifferenceDialog extends JDialog {
 
 	public DifferenceDialog(OWLEditorKit eKit) {
 		setLayout(new BorderLayout());
+		setTitle("Ontology Differences");
 		differenceManager = DifferenceManager.get(eKit.getModelManager());
 		
 		add(createNorth(), BorderLayout.NORTH);
