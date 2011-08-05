@@ -6,6 +6,7 @@ import java.util.UUID;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import org.apache.log4j.Logger;
 import org.protege.editor.core.Disposable;
 import org.protege.editor.core.ProtegeManager;
 import org.protege.editor.owl.OWLEditorKit;
@@ -15,6 +16,8 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 public class OntologyInAltWorkspaceFactory implements Disposable {
+	public static final Logger LOGGER = Logger.getLogger(OntologyInAltWorkspaceFactory.class);
+	
 	private OWLEditorKit eKit;
 	private OWLEditorKit altEditorKit;
 	private boolean display;
@@ -25,6 +28,7 @@ public class OntologyInAltWorkspaceFactory implements Disposable {
 	}
 	
 	public OWLOntology loadInSeparateSynchronizedWorkspace(IRI ontologyLocation) throws OWLOntologyCreationException {
+		long startTime = System.currentTimeMillis();
 		try {
 			altEditorKit = (OWLEditorKit) (eKit.getEditorKitFactory()).createEditorKit();
 		}
@@ -50,6 +54,7 @@ public class OntologyInAltWorkspaceFactory implements Disposable {
 			SwingUtilities.getAncestorOfClass(JFrame.class, altEditorKit.getOWLWorkspace()).setLocation(newPoint);
 		}
 		eKit.getOWLWorkspace().requestFocusInWindow();
+		LOGGER.info("Ontology load took " + (System.currentTimeMillis() - startTime) + "ms.");
 		return ontology;
 	}
 	
