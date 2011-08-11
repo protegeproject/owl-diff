@@ -67,7 +67,7 @@ public class DifferenceManager implements Disposable {
 		
 		StopWatch stopWatch = new StopWatch(LOGGER);
 		LOGGER.info("Starting Difference calculation...");
-		engine = new Engine(manager.getOWLDataFactory(), baselineOntology, workspaceOntology);
+		engine = new Engine(baselineOntology, workspaceOntology);
 		setupRendering(engine);
 		configuration.configure(engine);
 		engine.phase1();
