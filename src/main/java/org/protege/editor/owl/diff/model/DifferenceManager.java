@@ -21,6 +21,7 @@ import org.protege.owl.diff.present.EntityBasedDiff;
 import org.protege.owl.diff.present.PresentationAlgorithm;
 import org.protege.owl.diff.service.RenderingService;
 import org.protege.owl.diff.util.StopWatch;
+import org.protege.owl.diff.util.Util;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLDataFactory;
@@ -76,6 +77,7 @@ public class DifferenceManager implements Disposable {
 		engine.phase2();
 		stopWatch.finish();
 		fireStatusChanged(DifferenceEvent.DIFF_COMPLETED);
+		LOGGER.info("Differences Found: " + Util.getStats(engine));
 	}
 	
 	private void setupRendering(Engine e) {		
