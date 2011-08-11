@@ -75,11 +75,12 @@ public class ConfigureDifferenceRun extends JDialog {
 	public Configuration getConfiguration() {
 		Configuration config = new Configuration();
 
-		AlignmentAggressiveness effort = (AlignmentAggressiveness) aggressiveness.getSelectedItem();
-		for (Class<? extends AlignmentAlgorithm> alg : DifferenceActivator.createAlignmentAlgorithms()) {
+		AlignmentAggressiveness requestedEffort = (AlignmentAggressiveness) aggressiveness.getSelectedItem();
+		for (Class<? extends AlignmentAlgorithm> algorithmClass : DifferenceActivator.createAlignmentAlgorithms()) {
 			try {
-				if (alg.newInstance().getAggressiveness().compareTo(effort) <= 0) {
-					config.addAlignmentAlgorithm(alg);
+				AlignmentAlgorithm algorithm = algorithmClass.newInstance();
+				if (!algorithm.isCustom() && algorithm.getAggressiveness().compareTo(requestedEffort) <= 0) {
+					config.addAlignmentAlgorithm(algorithmClass);
 				}
 			}
 			catch (Exception e) {
