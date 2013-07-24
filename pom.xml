@@ -10,7 +10,7 @@
 
 	<groupId>edu.stanford.protege</groupId>
 	<artifactId>org.protege.editor.owl.diff</artifactId>
-	<version>4.1.0.213</version>
+	<version>4.1.0.214-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	
 	<name>OWL Difference</name>
@@ -30,9 +30,9 @@
 	</developers>
 	
 	<scm>
-		<connection>scm:svn:http://smi-protege.stanford.edu/repos/protege/protege4/plugins/org.protege.editor.owl.diff/tags/org.protege.editor.owl.diff-4.1.0.213</connection>
-		<developerConnection>scm:svn:https://smi-protege.stanford.edu/repos/protege/protege4/plugins/org.protege.editor.owl.diff/tags/org.protege.editor.owl.diff-4.1.0.213</developerConnection>
-		<url>http://smi-protege.stanford.edu/svn/protege4/plugins/org.protege.editor.owl.diff/tags/org.protege.editor.owl.diff-4.1.0.213</url>
+		<connection>scm:svn:http://smi-protege.stanford.edu/repos/protege/protege4/plugins/org.protege.editor.owl.diff/trunk/</connection>
+		<developerConnection>scm:svn:https://smi-protege.stanford.edu/repos/protege/protege4/plugins/org.protege.editor.owl.diff/trunk/</developerConnection>
+		<url>http://smi-protege.stanford.edu/svn/protege4/plugins/org.protege.editor.owl.diff/</url>
 	</scm>
 
 	<dependencies>
