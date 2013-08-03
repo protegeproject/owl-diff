@@ -61,7 +61,6 @@ public final class DifferenceActivator implements BundleActivator {
 	
 	public void start(BundleContext context) {
 		DifferenceActivator.context = context;
-		ProtegeProperties.getInstance().put("org.protege.differencecategory", "Ontology Comparison");
 	}
 
 	

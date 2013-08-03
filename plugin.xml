@@ -7,7 +7,7 @@
 
     <extension id="Protege Compare View"
                point="org.protege.editor.core.application.ViewComponent">
-        <label value="Difference List"/>
+        <label value="Difference list"/>
         <class value="org.protege.editor.owl.diff.ui.view.DiffView"/>
         <headerColor value="@org.protege.ontologycolor"/>
         <category value="@org.protege.differencecategory"/>
@@ -15,7 +15,7 @@
     
     <extension id="Unattached Differences View"
                point="org.protege.editor.core.application.ViewComponent">
-        <label value="Differences with No Subject"/>
+        <label value="Differences with no subject"/>
         <class value="org.protege.editor.owl.diff.ui.view.UnattachedDifferencesView"/>
         <headerColor value="@org.protege.ontologycolor"/>
         <category value="@org.protege.differencecategory"/>
@@ -23,7 +23,7 @@
 
     <extension id="Missing Refactors View"
                point="org.protege.editor.core.application.ViewComponent">
-        <label value="Potentially Missed Alignments"/>
+        <label value="Potentially missed alignments"/>
         <class value="org.protege.editor.owl.diff.ui.view.MissingRefactorsView"/>
         <headerColor value="@org.protege.ontologycolor"/>
         <category value="@org.protege.differencecategory"/>
@@ -41,7 +41,7 @@
 
    <extension id="CalculateDifferences"
                point="org.protege.editor.core.application.EditorKitMenuAction">
-        <name value="Compare Ontologies"/>
+        <name value="Compare ontologies"/>
         <class value="org.protege.editor.owl.diff.ui.boot.StartDiff"/>
         <path value="org.protege.editor.owl.menu.tools/SlotM-A"/>
         <editorKitId value="OWLEditorKit"/>
