@@ -29,6 +29,19 @@
         </developer>
     </developers>
     
+	<mailingLists>
+		<mailingList>
+			<name>protege-user</name>
+			<subscribe>https://mailman.stanford.edu/mailman/listinfo/protege-user</subscribe>
+			<unsubscribe>https://mailman.stanford.edu/mailman/listinfo/protege-user</unsubscribe>
+			<post>protege-user@lists.stanford.edu</post>
+			<archive>http://protege-project.136.n4.nabble.com/</archive>
+			<otherArchives>
+				<otherArchive>https://mailman.stanford.edu/pipermail/protege-user/</otherArchive>
+			</otherArchives>
+		</mailingList>
+	</mailingLists>
+	    
     <scm>
         <connection>scm:svn:http://smi-protege.stanford.edu/repos/protege/protege4/plugins/org.protege.editor.owl.diff/trunk/</connection>
         <developerConnection>scm:svn:https://smi-protege.stanford.edu/repos/protege/protege4/plugins/org.protege.editor.owl.diff/trunk/</developerConnection>
