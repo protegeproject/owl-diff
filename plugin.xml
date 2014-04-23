@@ -41,7 +41,7 @@
 
    <extension id="CalculateDifferences"
                point="org.protege.editor.core.application.EditorKitMenuAction">
-        <name value="Compare ontologies"/>
+        <name value="Compare ontologies..."/>
         <class value="org.protege.editor.owl.diff.ui.boot.StartDiff"/>
         <path value="org.protege.editor.owl.menu.tools/SlotM-A"/>
         <editorKitId value="OWLEditorKit"/>
