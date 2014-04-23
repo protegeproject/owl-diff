@@ -47,7 +47,12 @@
         <developerConnection>scm:git:git@github.com:protegeproject/owl-diff.git</developerConnection>
         <url>https://github.com/protegeproject/owl-diff</url>
     </scm>
-
+    
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/protegeproject/owl-diff/issues</url>
+	</issueManagement>
+	
     <dependencies>
         <dependency>
             <groupId>edu.stanford.protege</groupId>
