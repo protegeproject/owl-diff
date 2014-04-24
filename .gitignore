@@ -1,1 +1,8 @@
 target/
+
+# Eclipse
+.classpath
+.project
+.settings/
+META-INF/
+
