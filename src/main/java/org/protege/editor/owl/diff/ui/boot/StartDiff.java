@@ -30,22 +30,20 @@ public class StartDiff extends ProtegeOWLAction {
 		OntologyInAltWorkspaceFactory factory = (OntologyInAltWorkspaceFactory) p4Manager.get(OntologyInAltWorkspaceFactory.class);
 		return factory != null ? factory.getAltEditorKit() : null;
 	}
-	
-	
 
 	public void initialise() {
 	}
 
 	
 	public void dispose() {
-
 	}
-
 	
 	public void actionPerformed(ActionEvent e) {
 		ConfigureDifferenceRun confWindow = new ConfigureDifferenceRun(getOWLEditorKit());
-		confWindow.setLocation(new Point(200,200));
+		confWindow.pack();
+		confWindow.setLocationRelativeTo(null);
 		confWindow.setVisible(true);
+		
 		final IRI f = confWindow.getBaseline();
 		final boolean loadInSeparateWorkspace = confWindow.getOpenBaselineInSeparateWindow();
 		final Configuration configuration = confWindow.getConfiguration();
@@ -59,7 +57,6 @@ public class StartDiff extends ProtegeOWLAction {
 				}
 			}).start();
 		}
-
 	}
 	
 	private void calculateDiffs(IRI baselineOntologyLocation, Configuration configuration, ProgressMonitor monitor, boolean loadInSeparateWorkspace) {
@@ -92,7 +89,6 @@ public class StartDiff extends ProtegeOWLAction {
 		}
 	}
 	
-	
 	private void showDiffs() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
 		DifferenceDialog dialog = new DifferenceDialog(getOWLEditorKit());
 		dialog.setLocation(new Point(100,100));
@@ -100,5 +96,4 @@ public class StartDiff extends ProtegeOWLAction {
 		dialog.setSize(new Dimension(1000,500));
 		dialog.setVisible(true);
 	}
-
 }
