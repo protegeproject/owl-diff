@@ -98,6 +98,7 @@ public class ConfigureDifferenceRun extends JDialog {
 	}
 	
 	private void createGui() {
+		setTitle("Configure ontology comparison");
 		setLayout(new BorderLayout());
 		
 		addCenterPanel();
