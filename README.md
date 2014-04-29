@@ -1,4 +1,4 @@
-owl-diff
+OWL Difference Plug-in
 ========
 
 Plug-in for the [Protege Desktop](http://protege.stanford.edu/products.php#desktop-protege) ontology editor for comparing two OWL ontologies.
