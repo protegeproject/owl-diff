@@ -6,3 +6,9 @@ target/
 .settings/
 META-INF/
 
+#intelliJ
+*.iws
+*.ipr
+.idea
+*.iml
+build/
