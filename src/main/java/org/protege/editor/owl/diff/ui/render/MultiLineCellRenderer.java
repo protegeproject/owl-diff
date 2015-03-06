@@ -10,16 +10,12 @@ package org.protege.editor.owl.diff.ui.render;
  * credit to Zafir Anjum for JTableEx and thanks to SUN for their source code ;)
  */
 
-import java.awt.Color;
-import java.awt.Component;
-import java.io.Serializable;
-
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableCellRenderer;
+import java.awt.*;
+import java.io.Serializable;
 
 public class MultiLineCellRenderer extends JTextArea implements TableCellRenderer, Serializable {
   private static final long serialVersionUID = -6685029769696008674L;

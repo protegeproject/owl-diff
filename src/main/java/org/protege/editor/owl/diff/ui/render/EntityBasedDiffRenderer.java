@@ -1,16 +1,13 @@
 package org.protege.editor.owl.diff.ui.render;
 
-import java.awt.Component;
-
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JLabel;
-import javax.swing.JList;
-
 import org.protege.editor.owl.diff.model.DifferenceManager;
 import org.protege.owl.diff.present.EntityBasedDiff;
 import org.protege.owl.diff.present.MatchedAxiom;
 import org.protege.owl.diff.present.algorithms.IdentifyDeprecatedEntity;
 import org.protege.owl.diff.service.RenderingService;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class EntityBasedDiffRenderer extends DefaultListCellRenderer {
 	private static final long serialVersionUID = -2257588249282053158L;

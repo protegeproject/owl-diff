@@ -1,9 +1,9 @@
 package org.protege.editor.owl.diff.model;
 
-import java.util.Comparator;
-
 import org.protege.owl.diff.present.EntityBasedDiff;
 import org.protege.owl.diff.service.RenderingService;
+
+import java.util.Comparator;
 
 public class EntityBasedDiffComparator implements Comparator<EntityBasedDiff> {
 	private RenderingService renderer;

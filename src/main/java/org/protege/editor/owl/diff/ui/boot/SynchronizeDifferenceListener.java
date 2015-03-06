@@ -1,7 +1,5 @@
 package org.protege.editor.owl.diff.ui.boot;
 
-import java.util.UUID;
-
 import org.protege.editor.core.Disposable;
 import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.diff.model.DifferenceEvent;
@@ -10,6 +8,8 @@ import org.protege.editor.owl.diff.model.DifferenceManager;
 import org.protege.editor.owl.model.selection.OWLSelectionModel;
 import org.protege.owl.diff.present.EntityBasedDiff;
 import org.semanticweb.owlapi.model.OWLEntity;
+
+import java.util.UUID;
 
 public class SynchronizeDifferenceListener implements DifferenceListener, Disposable {
 	private DifferenceManager differenceManager;

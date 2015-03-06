@@ -1,20 +1,14 @@
 package org.protege.editor.owl.diff.ui;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
-import javax.swing.JCheckBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
 import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.diff.model.DifferenceEvent;
 import org.protege.editor.owl.diff.model.DifferenceListener;
 import org.protege.editor.owl.diff.model.DifferenceManager;
 import org.protege.owl.diff.util.Util;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 
 public class DifferenceDialog extends JDialog {
 	private static final long serialVersionUID = -7057739761303778176L;

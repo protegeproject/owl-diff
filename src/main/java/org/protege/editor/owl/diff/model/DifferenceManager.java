@@ -1,20 +1,10 @@
 package org.protege.editor.owl.diff.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Logger;
-
-
 import org.protege.editor.core.Disposable;
 import org.protege.editor.core.ProtegeApplication;
 import org.protege.editor.owl.diff.ui.boot.ProtegeShortFormProvider;
 import org.protege.editor.owl.diff.ui.boot.StartDiff;
 import org.protege.editor.owl.model.OWLModelManager;
-import org.protege.editor.owl.ui.renderer.OWLRendererPreferences;
 import org.protege.owl.diff.Engine;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.conf.Configuration;
@@ -23,14 +13,11 @@ import org.protege.owl.diff.present.PresentationAlgorithm;
 import org.protege.owl.diff.service.RenderingService;
 import org.protege.owl.diff.util.StopWatch;
 import org.protege.owl.diff.util.Util;
-import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLAnnotationProperty;
-import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.OWLOntologySetProvider;
-import org.semanticweb.owlapi.util.AnnotationValueShortFormProvider;
-import org.semanticweb.owlapi.util.OWLOntologyImportsClosureSetProvider;
+
+import java.util.*;
+import java.util.logging.Logger;
 
 public class DifferenceManager implements Disposable {
 	public static final String ID = DifferenceManager.class.getCanonicalName();

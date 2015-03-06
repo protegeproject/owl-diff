@@ -1,11 +1,5 @@
 package org.protege.editor.owl.diff.ui.boot;
 
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-
-import javax.swing.ProgressMonitor;
-
 import org.protege.editor.core.ProtegeApplication;
 import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.diff.model.DifferenceManager;
@@ -16,6 +10,10 @@ import org.protege.owl.diff.conf.Configuration;
 import org.protege.owl.diff.service.RenderingService;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 
 
 public class StartDiff extends ProtegeOWLAction {

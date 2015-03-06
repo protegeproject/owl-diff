@@ -1,18 +1,16 @@
 package org.protege.editor.owl.diff.ui;
 
-import java.awt.BorderLayout;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-
 import org.protege.editor.owl.diff.model.DifferenceEvent;
 import org.protege.editor.owl.diff.model.DifferenceListener;
 import org.protege.editor.owl.diff.model.DifferenceManager;
 import org.protege.owl.diff.present.Changes;
 import org.protege.owl.diff.present.MatchedAxiom;
 import org.semanticweb.owlapi.model.OWLAxiom;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class UnattachedDifferencesPanel extends JPanel {
 	private static final long serialVersionUID = 4039090974349587237L;

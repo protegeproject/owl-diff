@@ -1,15 +1,14 @@
 package org.protege.editor.owl.diff.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedSet;
-
-import javax.swing.table.AbstractTableModel;
-
 import org.protege.editor.owl.diff.model.DifferenceManager;
 import org.protege.owl.diff.present.MatchedAxiom;
 import org.protege.owl.diff.service.RenderingService;
 import org.semanticweb.owlapi.model.OWLAxiom;
+
+import javax.swing.table.AbstractTableModel;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.SortedSet;
 
 public class DifferenceTableModel extends AbstractTableModel {
 	private static final long serialVersionUID = -1919687859946498484L;

@@ -1,30 +1,5 @@
 package org.protege.editor.owl.diff.ui.boot;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Frame;
-import java.awt.GridLayout;
-import java.awt.LayoutManager;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-
 import org.protege.editor.core.ProtegeApplication;
 import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.diff.DifferenceActivator;
@@ -32,12 +7,19 @@ import org.protege.editor.owl.ui.UIHelper;
 import org.protege.owl.diff.align.AlignmentAggressiveness;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.align.algorithms.DeferDeprecationAlgorithm;
-import org.protege.owl.diff.align.algorithms.MatchByRendering;
 import org.protege.owl.diff.conf.Configuration;
 import org.protege.owl.diff.present.PresentationAlgorithm;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ConfigureDifferenceRun extends JDialog {
 	private static final long serialVersionUID = -2882654202196117453L;

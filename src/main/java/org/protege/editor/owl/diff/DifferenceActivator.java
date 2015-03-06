@@ -1,20 +1,19 @@
 package org.protege.editor.owl.diff;
 
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.protege.editor.core.ProtegeApplication;
+import org.protege.owl.diff.align.AlignmentAlgorithm;
+import org.protege.owl.diff.present.PresentationAlgorithm;
+import org.protege.owl.diff.util.ClassLoaderWrapper;
+import org.protege.owl.diff.util.Util;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.protege.editor.core.ProtegeApplication;
-import org.protege.editor.core.ProtegeProperties;
-import org.protege.owl.diff.align.AlignmentAlgorithm;
-import org.protege.owl.diff.present.PresentationAlgorithm;
-import org.protege.owl.diff.util.ClassLoaderWrapper;
-import org.protege.owl.diff.util.Util;
 
 public final class DifferenceActivator implements BundleActivator {
 	private static BundleContext context;

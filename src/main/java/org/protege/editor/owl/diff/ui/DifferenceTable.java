@@ -1,8 +1,8 @@
 package org.protege.editor.owl.diff.ui;
 
-import javax.swing.JTable;
-
 import org.protege.editor.owl.diff.ui.render.MultiLineCellRenderer;
+
+import javax.swing.*;
 
 
 public class DifferenceTable extends JTable {
