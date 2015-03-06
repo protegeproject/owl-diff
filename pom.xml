@@ -10,7 +10,7 @@
 
     <groupId>edu.stanford.protege</groupId>
     <artifactId>org.protege.editor.owl.diff</artifactId>
-    <version>5.0.0</version>
+    <version>5.0.1-SNAPSHOT</version>
     <packaging>bundle</packaging>
     
     <name>OWL Difference</name>
