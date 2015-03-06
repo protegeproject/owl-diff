@@ -1,10 +1,11 @@
 package org.protege.editor.owl.diff.ui.view;
 
 import java.awt.BorderLayout;
+import java.util.logging.Logger;
 
 import javax.swing.JLabel;
 
-import org.apache.log4j.Logger;
+
 import org.protege.editor.core.ProtegeApplication;
 import org.protege.editor.owl.diff.model.DifferenceEvent;
 import org.protege.editor.owl.diff.model.DifferenceListener;
@@ -15,7 +16,7 @@ import org.protege.owl.diff.util.Util;
 
 public class DiffView extends AbstractOWLViewComponent {
 	private static final long serialVersionUID = -953820310817783007L;
-	public static final Logger LOGGER = Logger.getLogger(DiffView.class);
+	public static final Logger LOGGER = Logger.getLogger(DiffView.class.getName());
 	
 	private DifferencesByEntity view;
 	private JLabel status;

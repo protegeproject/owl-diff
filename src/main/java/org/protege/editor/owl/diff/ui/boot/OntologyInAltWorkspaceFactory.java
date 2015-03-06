@@ -2,11 +2,12 @@ package org.protege.editor.owl.diff.ui.boot;
 
 import java.awt.Point;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import org.apache.log4j.Logger;
+
 import org.protege.editor.core.Disposable;
 import org.protege.editor.core.ProtegeManager;
 import org.protege.editor.owl.OWLEditorKit;
@@ -16,7 +17,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 public class OntologyInAltWorkspaceFactory implements Disposable {
-	public static final Logger LOGGER = Logger.getLogger(OntologyInAltWorkspaceFactory.class);
+	public static final Logger LOGGER = Logger.getLogger(OntologyInAltWorkspaceFactory.class.getName());
 	
 	private OWLEditorKit eKit;
 	private OWLEditorKit altEditorKit;

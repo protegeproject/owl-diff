@@ -6,8 +6,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
-import org.apache.log4j.Logger;
+
 import org.protege.editor.core.Disposable;
 import org.protege.editor.core.ProtegeApplication;
 import org.protege.editor.owl.diff.ui.boot.ProtegeShortFormProvider;
@@ -34,7 +35,7 @@ import org.semanticweb.owlapi.util.OWLOntologyImportsClosureSetProvider;
 public class DifferenceManager implements Disposable {
 	public static final String ID = DifferenceManager.class.getCanonicalName();
 	
-	public static final Logger LOGGER = Logger.getLogger(DifferenceManager.class);
+	public static final Logger LOGGER = Logger.getLogger(DifferenceManager.class.getName());
 	
 	private OWLModelManager manager;
 	private OWLOntology workspaceOntology;
