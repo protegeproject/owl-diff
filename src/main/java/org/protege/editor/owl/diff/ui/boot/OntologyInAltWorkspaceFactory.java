@@ -55,17 +55,17 @@ public class OntologyInAltWorkspaceFactory implements Disposable {
 		LOGGER.info("Ontology load took " + (System.currentTimeMillis() - startTime) + "ms.");
 		return ontology;
 	}
-	
+
 	/**
-	 * Loads the ontology using the ontology manager.
-	 * 
-	 * This method is trivial.  The purpose of introducing this method is to allow the caller to make any 
+	 *  Loads the ontology using the ontology manager.
+	 *
+	 * This method is trivial.  The purpose of introducing this method is to allow the caller to make any
 	 * needed fixups to the ontology before the ontology is added to the separate workspace.
-	 * 
-	 * @param manager
-	 * @param ontologyLocation
-	 * @return
-	 * @throws OWLOntologyCreationException
+	 *
+	 * @param manager The manager
+	 * @param ontologyLocation The ontology location
+	 * @return The ontology
+	 * @throws OWLOntologyCreationException If there was a problem creating the ontology
 	 */
 	protected OWLOntology loadOntology(OWLOntologyManager manager, IRI ontologyLocation) throws OWLOntologyCreationException {
 		return manager.loadOntologyFromOntologyDocument(ontologyLocation);
