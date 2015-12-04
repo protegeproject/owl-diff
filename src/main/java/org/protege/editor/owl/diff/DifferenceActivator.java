@@ -3,7 +3,7 @@ package org.protege.editor.owl.diff;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.protege.editor.core.ProtegeApplication;
+import org.protege.editor.core.ui.error.ErrorLogPanel;
 import org.protege.owl.diff.align.AlignmentAlgorithm;
 import org.protege.owl.diff.present.PresentationAlgorithm;
 import org.protege.owl.diff.util.ClassLoaderWrapper;
@@ -25,7 +25,7 @@ public final class DifferenceActivator implements BundleActivator {
     			algorithms.addAll(Util.createDeclaredAlignmentAlgorithms(wrapBundle(b)));
     		}
     		catch (IOException ioe) {
-    			ProtegeApplication.getErrorLog().logError(ioe);
+				ErrorLogPanel.showErrorDialog(ioe);
     		}
     	}
 		return algorithms;
@@ -38,7 +38,7 @@ public final class DifferenceActivator implements BundleActivator {
     			algorithms.addAll(Util.createDeclaredPresentationAlgorithms(wrapBundle(b)));
     		}
     		catch (IOException ioe) {
-    			ProtegeApplication.getErrorLog().logError(ioe);
+				ErrorLogPanel.showErrorDialog(ioe);
     		}
     	}
 		return algorithms;		

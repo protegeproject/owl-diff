@@ -1,6 +1,6 @@
 package org.protege.editor.owl.diff.ui.boot;
 
-import org.protege.editor.core.ProtegeApplication;
+import org.protege.editor.core.ui.error.ErrorLogPanel;
 import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.diff.model.DifferenceManager;
 import org.protege.editor.owl.diff.ui.DifferenceDialog;
@@ -80,7 +80,7 @@ public class StartDiff extends ProtegeOWLAction {
 			showDiffs();
 		}
 		catch (Throwable t) {
-			ProtegeApplication.getErrorLog().logError(t);
+			ErrorLogPanel.showErrorDialog(t);
 		}
 		finally {
 			monitor.close();

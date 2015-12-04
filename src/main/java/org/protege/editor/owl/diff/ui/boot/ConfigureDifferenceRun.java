@@ -1,6 +1,6 @@
 package org.protege.editor.owl.diff.ui.boot;
 
-import org.protege.editor.core.ProtegeApplication;
+import org.protege.editor.core.ui.error.ErrorLogPanel;
 import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.diff.DifferenceActivator;
 import org.protege.editor.owl.ui.UIHelper;
@@ -66,7 +66,7 @@ public class ConfigureDifferenceRun extends JDialog {
 				}
 			}
 			catch (Exception e) {
-				ProtegeApplication.getErrorLog().logError(e);
+				ErrorLogPanel.showErrorDialog(e);
 			}
 		}
 		if (doDeprecationAndReplace.isSelected()) {

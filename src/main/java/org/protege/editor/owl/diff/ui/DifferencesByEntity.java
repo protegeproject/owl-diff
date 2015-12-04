@@ -1,7 +1,7 @@
 package org.protege.editor.owl.diff.ui;
 
 import org.protege.editor.core.Disposable;
-import org.protege.editor.core.ProtegeApplication;
+import org.protege.editor.core.ui.error.ErrorLogPanel;
 import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.diff.model.DifferenceEvent;
 import org.protege.editor.owl.diff.model.DifferenceListener;
@@ -109,7 +109,7 @@ public class DifferencesByEntity extends JPanel implements Disposable {
 			});
 		}
 		catch (Exception e) {
-			ProtegeApplication.getErrorLog().logError(e);
+			ErrorLogPanel.showErrorDialog(e);
 		}
 
 	}

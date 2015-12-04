@@ -1,7 +1,7 @@
 package org.protege.editor.owl.diff.model;
 
 import org.protege.editor.core.Disposable;
-import org.protege.editor.core.ProtegeApplication;
+import org.protege.editor.core.ui.error.ErrorLogPanel;
 import org.protege.editor.owl.diff.ui.boot.ProtegeShortFormProvider;
 import org.protege.editor.owl.diff.ui.boot.StartDiff;
 import org.protege.editor.owl.model.OWLModelManager;
@@ -136,7 +136,7 @@ public class DifferenceManager implements Disposable {
 				listener.statusChanged(event);
 			}
 			catch (Exception e) {
-				ProtegeApplication.getErrorLog().logError(e);
+				ErrorLogPanel.showErrorDialog(e);
 			}
 		}
 	}

@@ -1,6 +1,6 @@
 package org.protege.editor.owl.diff.ui.view;
 
-import org.protege.editor.core.ProtegeApplication;
+import org.protege.editor.core.ui.error.ErrorLogPanel;
 import org.protege.editor.owl.diff.model.DifferenceEvent;
 import org.protege.editor.owl.diff.model.DifferenceListener;
 import org.protege.editor.owl.diff.model.DifferenceManager;
@@ -61,7 +61,7 @@ public class DiffView extends AbstractOWLViewComponent {
 			}
 		}
 		catch (Exception e) {
-			ProtegeApplication.getErrorLog().logError(e);
+			ErrorLogPanel.showErrorDialog(e);
 		}
 	}
 
