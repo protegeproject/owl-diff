@@ -11,10 +11,11 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import javax.swing.*;
 import java.awt.*;
 import java.util.UUID;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OntologyInAltWorkspaceFactory implements Disposable {
-	public static final Logger LOGGER = Logger.getLogger(OntologyInAltWorkspaceFactory.class.getName());
+	public static final Logger LOGGER = LoggerFactory.getLogger(OntologyInAltWorkspaceFactory.class.getName());
 	
 	private OWLEditorKit eKit;
 	private OWLEditorKit altEditorKit;

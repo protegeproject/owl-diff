@@ -17,12 +17,13 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import java.util.*;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DifferenceManager implements Disposable {
 	public static final String ID = DifferenceManager.class.getCanonicalName();
 	
-	public static final Logger LOGGER = Logger.getLogger(DifferenceManager.class.getName());
+	public static final Logger LOGGER = LoggerFactory.getLogger(DifferenceManager.class.getName());
 	
 	private OWLModelManager manager;
 	private OWLOntology workspaceOntology;
