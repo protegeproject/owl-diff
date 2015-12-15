@@ -127,7 +127,7 @@
                 <configuration>
                     <instructions>
                         <Bundle-Activator>org.protege.editor.owl.diff.DifferenceActivator</Bundle-Activator>
-                        <Bundle-SymbolicName>${project.artifactId};singleton:=true</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>org.protege.editor.owl.diff;singleton:=true</Bundle-SymbolicName>
                         <Bundle-Vendor>The Protege Development Team</Bundle-Vendor>
                         <Embed-Dependency>owl-diff-engine</Embed-Dependency>
                         <Import-Package>
@@ -135,7 +135,7 @@
                             org.protege.editor.owl.*;version="5.0.0",
                             *
                         </Import-Package>
-                        <Include-Resource>plugin.xml, {maven-resources}</Include-Resource>
+                        <Include-Resource>{maven-resources}</Include-Resource>
                         <Private-Package>org.protege.editor.owl.diff.*</Private-Package>
                     </instructions>
                 </configuration>
