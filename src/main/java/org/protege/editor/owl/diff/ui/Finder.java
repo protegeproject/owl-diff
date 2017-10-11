@@ -29,7 +29,7 @@ public class Finder extends JPanel {
 			setEnabled(differenceManager.isReady());
 		}
 	};
-
+	
 	public Finder(DifferenceManager differenceManager) {
 		setLayout(new FlowLayout());
 		this.differenceManager = differenceManager;
@@ -51,16 +51,14 @@ public class Finder extends JPanel {
 		text.setPreferredSize(new JTextField("DNA topoisomerase type 1 activity").getPreferredSize());
 		add(text);
 		setEnabled(differenceManager.isReady());
-
-
 	}
-
+	
 	public void setEnabled(boolean enabled) {
 		super.setEnabled(enabled);
 		text.setEnabled(enabled);
 		findButton.setEnabled(enabled);
 	}
-
+	
 	private void doFind() {
 		Changes changes = differenceManager.getEngine().getChanges();
 		RenderingService renderer = RenderingService.get(differenceManager.getEngine());
@@ -84,7 +82,7 @@ public class Finder extends JPanel {
 		dialog.pack();
 		dialog.setVisible(true);
 	}
-
+	
 	private JList createSwingList(List<EntityBasedDiff> diffs) {
 		final JList swingList = new JList();
 		DefaultListModel model = new DefaultListModel();
@@ -107,11 +105,11 @@ public class Finder extends JPanel {
 		}
 		return swingList;
 	}
-
+	
 	public void dispose() {
 		differenceManager.removeDifferenceListener(listener);
 		differenceManager = null;
 		text = null;
 	}
-
+	
 }
