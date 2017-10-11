@@ -33,15 +33,12 @@ public class Finder extends JPanel {
 	public Finder(DifferenceManager differenceManager) {
 		setLayout(new FlowLayout());
 		this.differenceManager = differenceManager;
-
-		// Export functionality
 		final JButton exportButton = new JButton("Export Differences");
 		exportButton.addActionListener(new ChangeExporter(differenceManager, this));
 		add(exportButton);
-
 		findButton = new JButton("Find");
 		findButton.addActionListener(new ActionListener() {
-
+			
 			public void actionPerformed(ActionEvent e) {
 				doFind();
 			}
@@ -65,11 +62,10 @@ public class Finder extends JPanel {
 		String toMatch = ".*" + text.getText() + ".*";
 		List<EntityBasedDiff> diffs = new ArrayList<EntityBasedDiff>();
 		for (EntityBasedDiff diff : changes.getEntityBasedDiffs()) {
-			if (diff.getSourceEntity() != null
-					&& renderer.renderSourceObject(diff.getSourceEntity()).matches(toMatch)) {
+			if (diff.getSourceEntity() != null && renderer.renderSourceObject(diff.getSourceEntity()).matches(toMatch)) {
 				diffs.add(diff);
-			} else if (diff.getTargetEntity() != null
-					&& renderer.renderTargetObject(diff.getTargetEntity()).matches(toMatch)) {
+			}
+			else if (diff.getTargetEntity() != null && renderer.renderTargetObject(diff.getTargetEntity()).matches(toMatch)) {
 				diffs.add(diff);
 			}
 		}

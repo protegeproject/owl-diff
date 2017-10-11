@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
@@ -12,7 +12,7 @@
     <artifactId>owl-diff</artifactId>
     <version>6.0.3-SNAPSHOT</version>
     <packaging>bundle</packaging>
-
+    
     <name>OWL Difference</name>
     <description>Plug-in for the Protege Desktop ontology editor for comparing two OWL ontologies.</description>
     <licenses>
@@ -28,37 +28,37 @@
             <email>tredmond@stanford.edu</email>
         </developer>
     </developers>
-
-    <mailingLists>
-        <mailingList>
-            <name>protege-user</name>
-            <subscribe>https://mailman.stanford.edu/mailman/listinfo/protege-user</subscribe>
-            <unsubscribe>https://mailman.stanford.edu/mailman/listinfo/protege-user</unsubscribe>
-            <post>protege-user@lists.stanford.edu</post>
-            <archive>http://protege-project.136.n4.nabble.com/</archive>
-            <otherArchives>
-                <otherArchive>https://mailman.stanford.edu/pipermail/protege-user/</otherArchive>
-            </otherArchives>
-        </mailingList>
-    </mailingLists>
-
+    
+	<mailingLists>
+		<mailingList>
+			<name>protege-user</name>
+			<subscribe>https://mailman.stanford.edu/mailman/listinfo/protege-user</subscribe>
+			<unsubscribe>https://mailman.stanford.edu/mailman/listinfo/protege-user</unsubscribe>
+			<post>protege-user@lists.stanford.edu</post>
+			<archive>http://protege-project.136.n4.nabble.com/</archive>
+			<otherArchives>
+				<otherArchive>https://mailman.stanford.edu/pipermail/protege-user/</otherArchive>
+			</otherArchives>
+		</mailingList>
+	</mailingLists>
+	    
     <scm>
         <connection>scm:git:git@github.com:protegeproject/owl-diff.git</connection>
         <developerConnection>scm:git:git@github.com:protegeproject/owl-diff.git</developerConnection>
         <url>https://github.com/protegeproject/owl-diff</url>
-        <tag>HEAD</tag>
-    </scm>
-
-    <issueManagement>
-        <system>GitHub</system>
-        <url>https://github.com/protegeproject/owl-diff/issues</url>
-    </issueManagement>
+      <tag>HEAD</tag>
+  </scm>
+    
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/protegeproject/owl-diff/issues</url>
+	</issueManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <protege.version>5.0.0-beta-19</protege.version>
     </properties>
-
+	
     <dependencies>
         <dependency>
             <groupId>edu.stanford.protege</groupId>
@@ -91,13 +91,13 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.3</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <version>3.3</version>
+              <configuration>
+                <source>1.8</source>
+                <target>1.8</target>
+              </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -136,14 +136,11 @@
                         <Bundle-SymbolicName>org.protege.editor.owl.diff;singleton:=true</Bundle-SymbolicName>
                         <Bundle-Vendor>The Protege Development Team</Bundle-Vendor>
                         <Embed-Dependency>gson, owl-diff-engine</Embed-Dependency>
-
-
                         <Import-Package>
                             org.protege.editor.core.*;version="5.0.0",
                             org.protege.editor.owl.*;version="5.0.0",
                             *
                         </Import-Package>
-
                         <Include-Resource>{maven-resources}</Include-Resource>
                         <Private-Package>org.protege.editor.owl.diff.*</Private-Package>
                     </instructions>
