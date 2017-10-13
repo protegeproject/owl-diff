@@ -44,9 +44,15 @@ public class ChangeExporter implements ActionListener {
 				PrintStream outStream = new PrintStream(out);
 				Gson gson = new GsonBuilder().setPrettyPrinting()
 						.registerTypeAdapter(EntityBasedDiff.class, new EntityBasedDiffJSonSerializer()).create();
-				String jsonRep = gson.toJson(changes.getEntityBasedDiffs());
-				outStream.print(jsonRep);
+				outStream.println("[");
+				for (EntityBasedDiff diff:changes.getEntityBasedDiffs()) {
+					String jsonRep = gson.toJson(diff);
+					outStream.println(jsonRep + ",");
+				}
+				outStream.println("]");
+				
 				outStream.close();
+				JOptionPane.showMessageDialog(parent, "Saved Differences to "+file.getPath());
 			} catch (IOException e1) {
 				// error message
 				JOptionPane.showMessageDialog(parent,
