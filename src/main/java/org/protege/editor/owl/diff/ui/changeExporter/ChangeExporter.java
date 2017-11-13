@@ -45,9 +45,16 @@ public class ChangeExporter implements ActionListener {
 				Gson gson = new GsonBuilder().setPrettyPrinting()
 						.registerTypeAdapter(EntityBasedDiff.class, new EntityBasedDiffJSonSerializer()).create();
 				outStream.println("[");
+				Boolean first = true;
 				for (EntityBasedDiff diff:changes.getEntityBasedDiffs()) {
 					String jsonRep = gson.toJson(diff);
-					outStream.println(jsonRep + ",");
+					if (first) {
+						first = false;
+					} else {
+						outStream.println(",");
+					}
+					
+					outStream.print(jsonRep);
 				}
 				outStream.println("]");
 				
