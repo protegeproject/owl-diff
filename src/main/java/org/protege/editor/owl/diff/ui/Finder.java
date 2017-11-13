@@ -4,6 +4,7 @@ import org.protege.editor.owl.diff.model.DifferenceEvent;
 import org.protege.editor.owl.diff.model.DifferenceListener;
 import org.protege.editor.owl.diff.model.DifferenceManager;
 import org.protege.editor.owl.diff.model.EntityBasedDiffComparator;
+import org.protege.editor.owl.diff.ui.changeExporter.ChangeExporter;
 import org.protege.editor.owl.diff.ui.render.EntityBasedDiffRenderer;
 import org.protege.owl.diff.present.Changes;
 import org.protege.owl.diff.present.EntityBasedDiff;
@@ -32,6 +33,9 @@ public class Finder extends JPanel {
 	public Finder(DifferenceManager differenceManager) {
 		setLayout(new FlowLayout());
 		this.differenceManager = differenceManager;
+		final JButton exportButton = new JButton("Export Differences");
+		exportButton.addActionListener(new ChangeExporter(differenceManager, this));
+		add(exportButton);
 		findButton = new JButton("Find");
 		findButton.addActionListener(new ActionListener() {
 			

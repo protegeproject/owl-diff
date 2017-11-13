@@ -10,7 +10,7 @@
 
     <groupId>edu.stanford.protege</groupId>
     <artifactId>owl-diff</artifactId>
-    <version>6.0.3-SNAPSHOT</version>
+    <version>6.1.1-SNAPSHOT</version>
     <packaging>bundle</packaging>
     
     <name>OWL Difference</name>
@@ -80,6 +80,12 @@
             <artifactId>owl-diff-engine</artifactId>
             <version>3.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.2</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -129,7 +135,7 @@
                         <Bundle-Activator>org.protege.editor.owl.diff.DifferenceActivator</Bundle-Activator>
                         <Bundle-SymbolicName>org.protege.editor.owl.diff;singleton:=true</Bundle-SymbolicName>
                         <Bundle-Vendor>The Protege Development Team</Bundle-Vendor>
-                        <Embed-Dependency>owl-diff-engine</Embed-Dependency>
+                        <Embed-Dependency>gson, owl-diff-engine</Embed-Dependency>
                         <Import-Package>
                             org.protege.editor.core.*;version="5.0.0",
                             org.protege.editor.owl.*;version="5.0.0",
